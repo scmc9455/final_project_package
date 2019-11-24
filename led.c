@@ -261,12 +261,16 @@ int main(int argc, char *argv[]){
     		//get the value of the LED clock, if low load a new binary value
     		gpio_get_value(LED_CLOCK, &returnedValue);
     		PDEBUG("returnedValue = %d\n", returnedValue);
+
+    		//if clock is high go back to sleep to stop
+    		if(returnedValue == 1){
+    			sleep(10);
     		//**************************//
     			//*******IF CLOCK LOW*******//
     			//ONLY LOAD THE FIRST 24, then this 24 bits moves through the LED strand to the place it need to be//
     			//Blue LSB gets loaded first
     		//if returned value then load a new clock value, the data gets latched by the serial clock on the rising edge
-    		if( returnedValue == 0 ){
+    		}else if( returnedValue == 0 ){
 
     			//load the blue data from the blue binary location into the data gpio
     			if( (i < 8) && (bluep >= 0)){
