@@ -105,19 +105,19 @@ int main(int argc, char *argv[]){
     //memory allocation space initalization for 24 bits
     red_binary_num = malloc(BINARY_NUM * sizeof(int));
     if(red_binary_num == NULL){
-    	PDEBUG("FAIL:red_binary_num = NULL");
+    	PDEBUG("FAIL:red_binary_num = NULL\n");
     	return -1;
     }
 
     green_binary_num = malloc(BINARY_NUM * sizeof(int));
     if(green_binary_num == NULL){
-        PDEBUG("FAIL:green_binary_num = NULL");
+        PDEBUG("FAIL:green_binary_num = NULL\n");
         return -1;
     }
 
     blue_binary_num = malloc(BINARY_NUM * sizeof(int));
     if(blue_binary_num == NULL){
-        PDEBUG("FAIL:blue_binary_num = NULL");
+        PDEBUG("FAIL:blue_binary_num = NULL\n");
         return -1;
     }
 
@@ -203,20 +203,20 @@ int main(int argc, char *argv[]){
     clock_count = led_position*CLOCKS_PER_LED;
     PDEBUG("clock_count = %d\n", clock_count);
     	
-    PDEBUG("Setting up LED_CLOCK");
+    PDEBUG("Setting up LED_CLOCK\n");
 	//initialize the gpio clocking for the LED
     gpio_export(LED_CLOCK);
 	//set the direction of the pin
     gpio_set_dir(LED_CLOCK,OUTPUT_PIN);
     //initialize the gpio
 
-    PDEBUG("Setting up LED_DATA");
+    PDEBUG("Setting up LED_DATA\n");
     //initialize the gpio for data
     gpio_export(LED_DATA);
   	//set the direction of the pin
     gpio_set_dir(LED_DATA,OUTPUT_PIN);
 
-    PDEBUG("Setting up initial pin values");
+    PDEBUG("Setting up initial pin values\n");
   	//set the initial value of the data
     gpio_set_value(LED_CLOCK,HIGH);
   	//set the initial value of the data
@@ -226,10 +226,10 @@ int main(int argc, char *argv[]){
     signal(SIGALRM, interruptHandler);
 
     //create the timer
-    PDEBUG("Calling Timer Create");
+    PDEBUG("Calling Timer Create\n");
     ret = timer_create(CLOCK_MONOTONIC, NULL, &timer_id);
     if(ret < 0){
-    	PDEBUG("Timer Create Fail");
+    	PDEBUG("Timer Create Fail\n");
     	syslog(LOG_ERR, "Timer Create Error");
     }
 
@@ -240,7 +240,12 @@ int main(int argc, char *argv[]){
     itime.it_interval.tv_sec = 1;
     itime.it_interval.tv_nsec = 0;
 	//set the timer and arm it *Timer running*
-    timer_settime(timer_id, CLOCK_REALTIME, &itime, NULL);
+    PDEBUG("Timer settime called\n");
+    ret = timer_settime(timer_id, CLOCK_REALTIME, &itime, NULL);
+    if(ret < 0){
+    	PDEBUG("Timer SetTime Fail\n");
+    	syslog(LOG_ERR, "Timer Settime Error");
+    }
     
     uint32_t returnedValue = 0;
     int bluep = 7;
@@ -250,11 +255,12 @@ int main(int argc, char *argv[]){
     //this covers the first led load, the clocking needs to be loaded all the way through the strip
     //using the timer this loop counts 24 clocks based on the timing of the timer interval
     for( i=0; i<clock_count; i++ ){
+    		PDEBUG("Inside for loop: i=%d\n",i);
     		//sleep for up to 10 seconds
     		sleep(10);
     		//get the value of the LED clock, if low load a new binary value
     		gpio_get_value(LED_CLOCK, &returnedValue);
-
+    		PDEBUG("returnedValue = %d\n", returnedValue);
     		//**************************//
     			//*******IF CLOCK LOW*******//
     			//ONLY LOAD THE FIRST 24, then this 24 bits moves through the LED strand to the place it need to be//
@@ -264,14 +270,18 @@ int main(int argc, char *argv[]){
 
     			//load the blue data from the blue binary location into the data gpio
     			if( (i < 8) && (bluep >= 0)){
+    				PDEBUG("Inside Blue If Statement\n");
+    				PDEBUG("bluep = %d\n", bluep);
     				//loads the LSB first up to the MSB
     				int binSet = *(blue_binary_num+bluep);
     				bluep--;
     				//if binValue is a 1 or 0 set function appropriately
     				if(binSet == 1){
+    					PDEBUG("GPIO Data Set HIGH\n");
     					gpio_set_value(LED_DATA, HIGH);
     				}
     				if(binSet == 0){
+    					PDEBUG("GPIO Data Set LOW\n");
     					gpio_set_value(LED_DATA, LOW);
     				}
     			}//end of blue data load
@@ -279,14 +289,18 @@ int main(int argc, char *argv[]){
 
     			//load the blue data from the blue binary location into the data gpio
     			if( (i < 16) && (greenp >= 0)){
+    				PDEBUG("Inside Green If Statement\n");
+    				PDEBUG("greenp = %d\n", greenp);
     				//loads the LSB first up to the MSB
     				int binSet = *(green_binary_num+greenp);
 			    	greenp--;
     			    //if binValue is a 1 or 0 set function appropriately
     			    if(binSet == 1){
+    					PDEBUG("GPIO Data Set HIGH\n");
     			    	gpio_set_value(LED_DATA, HIGH);
     			    }
     			    if(binSet == 0){
+    					PDEBUG("GPIO Data Set LOW\n");
     			    	gpio_set_value(LED_DATA, LOW);
     			    }
     			}//end of green data load
@@ -294,14 +308,18 @@ int main(int argc, char *argv[]){
 
     			//load the blue data from the blue binary location into the data gpio
     			if( (i < 25) && (redp >= 0)){
+    				PDEBUG("Inside Red If Statement\n");
+    				PDEBUG("redp = %d\n", redp);
     				//loads the LSB first up to the MSB
     				int binSet = *(red_binary_num+greenp);
 			    	redp--;
     			    //if binValue is a 1 or 0 set function appropriately
     			    if(binSet == 1){
+    					PDEBUG("GPIO Data Set HIGH\n");
     			    	gpio_set_value(LED_DATA, HIGH);
     			    }
     			    if(binSet == 0){
+    					PDEBUG("GPIO Data Set LOW\n");
     			    	gpio_set_value(LED_DATA, LOW);
     			    }
     			}//end of red data load
@@ -311,6 +329,7 @@ int main(int argc, char *argv[]){
     }//end of for loop
 
     //finally set clock low to latch the data into the intended LED in the strand
+	PDEBUG("GPIO CLOCK Set LOW for latching data\n");
     gpio_set_value(LED_CLOCK,LOW);
 
     return 0;
