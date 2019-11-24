@@ -264,6 +264,7 @@ int main(int argc, char *argv[]){
 
     		//if clock is high go back to sleep to stop
     		if(returnedValue == 1){
+    			PDEBUG("returnValue 1, going to sleep");
     			sleep(10);
     		//**************************//
     			//*******IF CLOCK LOW*******//
@@ -278,6 +279,7 @@ int main(int argc, char *argv[]){
     				PDEBUG("bluep = %d\n", bluep);
     				//loads the LSB first up to the MSB
     				int binSet = *(blue_binary_num+bluep);
+    				PDEBUG("binSet = %d\n", binSet);
     				bluep--;
     				//if binValue is a 1 or 0 set function appropriately
     				if(binSet == 1){
@@ -297,7 +299,8 @@ int main(int argc, char *argv[]){
     				PDEBUG("greenp = %d\n", greenp);
     				//loads the LSB first up to the MSB
     				int binSet = *(green_binary_num+greenp);
-			    	greenp--;
+    				PDEBUG("binSet = %d\n", binSet);
+    				greenp--;
     			    //if binValue is a 1 or 0 set function appropriately
     			    if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
@@ -316,6 +319,7 @@ int main(int argc, char *argv[]){
     				PDEBUG("redp = %d\n", redp);
     				//loads the LSB first up to the MSB
     				int binSet = *(red_binary_num+greenp);
+    				PDEBUG("binSet = %d\n", binSet);
 			    	redp--;
     			    //if binValue is a 1 or 0 set function appropriately
     			    if(binSet == 1){
