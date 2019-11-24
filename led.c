@@ -45,8 +45,9 @@ void interruptHandler(int sig){
 
     uint32_t ret;
     gpio_get_value(LED_CLOCK, &ret);
+    PDEBUG("Inside interrupt handler: ret = %d\n", ret);
 
-    if(ret == LOW){
+    if(ret == 0){
     	gpio_set_value(LED_CLOCK,HIGH);
     }else{
     	gpio_set_value(LED_CLOCK,LOW);
@@ -264,7 +265,7 @@ int main(int argc, char *argv[]){
 
     		//if clock is high go back to sleep to stop
     		if(returnedValue == 1){
-    			PDEBUG("returnValue 1, going to sleep");
+    			PDEBUG("returnValue 1, going to sleep\n");
     			sleep(10);
     		//**************************//
     			//*******IF CLOCK LOW*******//
