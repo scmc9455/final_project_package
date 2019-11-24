@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <fcntl.h>
+#include <signal.h>
 
 #define GPIO_NUM 53
 
@@ -34,8 +35,8 @@ void interruptHandler(int sig){
 
 int main(void){
 
-    //timer_t timer_id;
-    //struct itimerspec itime;
+    timer_t timer_id;
+    struct itimerspec itime;
 
 	//initialize the gpio
     gpio_export(GPIO_NUM);
@@ -44,7 +45,7 @@ int main(void){
     	//set the initial value
     gpio_set_value(GPIO_NUM,HIGH);
 
-    while(1){
+/*    while(1){
 
 	uint32_t ret;
 	gpio_get_value(GPIO_NUM, &ret);
@@ -59,9 +60,9 @@ int main(void){
 	}//end of for loop
     
     }//end of while loop
-
-/*	//register the interrupt
-    signal(SIGALRM,InterruptHandler);
+*/
+	//register the interrupt
+    signal(SIGALRM, interruptHandler);
 	//create the timer
     timer_create(CLOCK_MONOTONIC, NULL, &timer_id);
 
@@ -72,10 +73,12 @@ int main(void){
     itime.it_interval.tv_sec = 1;
     itime.it_interval.tv_nsec = 0;
 	//set the timer and arm it *Timer running*
-    timer_settime(timer_id, TIMER_RELTIME, &itime, NULL);
+    timer_settime(timer_id, CLOCK_REALTIME, &itime, NULL);
     
+    while(1);
+
 //check return values
-*/
+
     return 0;
 }
 

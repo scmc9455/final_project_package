@@ -46,7 +46,7 @@ clean:
 
 #===================builds==============================
 led:led.c
-	$(CC) $(CCFLAGS) -lrt $(INCLUDES) led.c -o led
+	$(CC) $(CCFLAGS) $(INCLUDES) led.c -o led -lrt
 
 
 #=====================================================================
