@@ -46,7 +46,7 @@ clean:
 
 #===================builds==============================
 led:led.c
-	$(CC) $(CCFLAGS) -lrt $(INCLUDES) gpiotest -o gpiotest.c
+	$(CC) $(CCFLAGS) -lrt $(INCLUDES) led.c -o led
 
 
 #=====================================================================

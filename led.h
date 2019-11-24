@@ -11,8 +11,7 @@
 #ifndef LED_H_
 #define LED_H_
 
-//Timer function
-int interruptHandler(int sig);
+#include <stdint.h>
 
 //**********************************
 //Source Code from Derek Molloy
@@ -25,26 +24,26 @@ int interruptHandler(int sig);
 #define POLL_TIMEOUT (3 * 1000) /* 3 seconds */
 #define MAX_BUF 64
 
-enum PIN_DIRECTION{
+typedef enum{
 	INPUT_PIN=0,
 	OUTPUT_PIN=1
-};
+}PIN_DIRECTION;
 
-enum PIN_VALUE{
+typedef enum{
 	LOW=0,
 	HIGH=1
-};
+}PIN_VALUE;
 
 /****************************************************************
  * gpio_export
  ****************************************************************/
-int gpio_export(unsigned int gpio);
-int gpio_unexport(unsigned int gpio);
-int gpio_set_dir(unsigned int gpio, PIN_DIRECTION out_flag);
-int gpio_set_value(unsigned int gpio, PIN_VALUE value);
-int gpio_get_value(unsigned int gpio, unsigned int *value);
-int gpio_set_edge(unsigned int gpio, char *edge);
-int gpio_fd_open(unsigned int gpio);
-int gpio_fd_close(int fd);
+int gpio_export(uint32_t gpio);
+int gpio_unexport(uint32_t gpio);
+int gpio_set_dir(uint32_t gpio, PIN_DIRECTION out_flag);
+int gpio_set_value(uint32_t gpio, PIN_VALUE value);
+int gpio_get_value(uint32_t gpio, uint32_t *value);
+int gpio_set_edge(uint32_t gpio, char *edge);
+int gpio_fd_open(uint32_t gpio);
+int gpio_fd_close(uint32_t fd);
 
 #endif /* LED_H_ */

@@ -16,12 +16,13 @@
 #include <errno.h>
 #include <unistd.h>
 #include <time.h>
+#include <fcntl.h>
 
 #define GPIO_NUM 53
 
 void interruptHandler(int sig){
 
-    int ret;
+    uint32_t ret;
     gpio_get_value(GPIO_NUM, &ret);
 
     if(ret == LOW){
@@ -33,8 +34,8 @@ void interruptHandler(int sig){
 
 int main(void){
 
-    timer_t timer_id;
-    struct itimerspec itime;
+    //timer_t timer_id;
+    //struct itimerspec itime;
 
 	//initialize the gpio
     gpio_export(GPIO_NUM);
@@ -44,16 +45,19 @@ int main(void){
     gpio_set_value(GPIO_NUM,HIGH);
 
     while(1){
-	for(int i=0; i<10000; i++){
-	    int ret;
-	    gpio_get_value(GPIO_NUM, &ret);
 
-	    if(ret == LOW){
-	        gpio_set_value(GPIO_NUM,HIGH);
-    	    }else{
-	        gpio_set_value(GPIO_NUM,LOW);
-    	    }
+	uint32_t ret;
+	gpio_get_value(GPIO_NUM, &ret);
+	
+        if(ret == LOW){
+	    gpio_set_value(GPIO_NUM,HIGH);
+    	}else{
+	    gpio_set_value(GPIO_NUM,LOW);
+    	}
+
+	for(int i=0; i<100000000; i++){
 	}//end of for loop
+    
     }//end of while loop
 
 /*	//register the interrupt
@@ -83,7 +87,7 @@ int main(void){
 /****************************************************************
  * gpio_export
  ****************************************************************/
-int gpio_export(unsigned int gpio)
+int gpio_export(uint32_t gpio)
 {
 	int fd, len;
 	char buf[MAX_BUF];
@@ -104,7 +108,7 @@ int gpio_export(unsigned int gpio)
 /****************************************************************
  * gpio_unexport
  ****************************************************************/
-int gpio_unexport(unsigned int gpio)
+int gpio_unexport(uint32_t gpio)
 {
 	int fd, len;
 	char buf[MAX_BUF];
@@ -124,7 +128,7 @@ int gpio_unexport(unsigned int gpio)
 /****************************************************************
  * gpio_set_dir
  ****************************************************************/
-int gpio_set_dir(unsigned int gpio, PIN_DIRECTION out_flag)
+int gpio_set_dir(uint32_t gpio, PIN_DIRECTION out_flag)
 {
 	int fd;
 	char buf[MAX_BUF];
@@ -149,7 +153,7 @@ int gpio_set_dir(unsigned int gpio, PIN_DIRECTION out_flag)
 /****************************************************************
  * gpio_set_value
  ****************************************************************/
-int gpio_set_value(unsigned int gpio, PIN_VALUE value)
+int gpio_set_value(uint32_t gpio, PIN_VALUE value)
 {
 	int fd;
 	char buf[MAX_BUF];
@@ -174,7 +178,7 @@ int gpio_set_value(unsigned int gpio, PIN_VALUE value)
 /****************************************************************
  * gpio_get_value
  ****************************************************************/
-int gpio_get_value(unsigned int gpio, unsigned int *value)
+int gpio_get_value(uint32_t gpio, uint32_t *value)
 {
 	int fd;
 	char buf[MAX_BUF];
