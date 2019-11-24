@@ -10,8 +10,8 @@
 
 CFLAGS = -Wall -Werror
 #all buildable files
-SRC = ./gpiotest.c 
-OBJS = ./gpiotest.o
+SRC = ./led.c
+OBJS = ./led
 
 ifeq ($(CC),)
 	CC = $(CROSS_COMPILE)gcc
@@ -45,8 +45,8 @@ clean:
 
 
 #===================builds==============================
-gpiotest:gpiotest.c
-	$(CC) $(CCFLAGS) $(INCLUDES) gpiotest -o gpiotest.c
+led:led.c
+	$(CC) $(CCFLAGS) -lrt $(INCLUDES) gpiotest -o gpiotest.c
 
 
 #=====================================================================
