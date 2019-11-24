@@ -295,7 +295,7 @@ int main(int argc, char *argv[]){
 
 
     			//load the blue data from the blue binary location into the data gpio
-    			if( (i < 16) && (greenp >= 0)){
+    			if( ((i > 7) && (i < 16)) && (greenp >= 0)){
     				PDEBUG("Inside Green If Statement\n");
     				PDEBUG("greenp = %d\n", greenp);
     				//loads the LSB first up to the MSB
@@ -315,7 +315,7 @@ int main(int argc, char *argv[]){
 
 
     			//load the blue data from the blue binary location into the data gpio
-    			if( (i < 25) && (redp >= 0)){
+    			if( ((i > 15) && (i < 25)) && (redp >= 0)){
     				PDEBUG("Inside Red If Statement\n");
     				PDEBUG("redp = %d\n", redp);
     				//loads the LSB first up to the MSB
