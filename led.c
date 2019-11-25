@@ -37,6 +37,7 @@
 
 //keeping track of how many clocking cycles have happened - 24 per LED
 int clock_count;
+uint32_t gpio_return_value;
 
 //******************************************
 //interrupt handler for signal interrupts
@@ -49,8 +50,10 @@ void interruptHandler(int sig){
 
     if(ret == 0){
     	gpio_set_value(LED_CLOCK,HIGH);
+    	gpio_return_value = 0;
     }else{
     	gpio_set_value(LED_CLOCK,LOW);
+    	gpio_return_value = 1;
     }
 
 }
@@ -248,31 +251,31 @@ int main(int argc, char *argv[]){
     	syslog(LOG_ERR, "Timer Settime Error");
     }
     
-    uint32_t returnedValue = 0;
+    uint32_t gpio_return_value = 0;
     int bluep = 7;
     int greenp = 7;
     int redp = 7;
 
     //this covers the first led load, the clocking needs to be loaded all the way through the strip
     //using the timer this loop counts 24 clocks based on the timing of the timer interval
-    for( i=0; i<clock_count; i++ ){
+    for( i=0; i<(clock_count+1); i++ ){
     		PDEBUG("Inside for loop: i=%d\n",i);
     		//sleep for up to 10 seconds
     		sleep(10);
     		//get the value of the LED clock, if low load a new binary value
-    		gpio_get_value(LED_CLOCK, &returnedValue);
-    		PDEBUG("returnedValue = %d\n", returnedValue);
+    		//gpio_return_value has been changed in the interrupt;
+			PDEBUG("gpio_return_value = %d\n", gpio_return_value);
 
     		//if clock is high go back to sleep to stop
-    		if(returnedValue == 1){
-    			PDEBUG("returnValue 1, going to sleep\n");
+    		if(gpio_return_value == 1){
+    			PDEBUG("gpio_return_value is 1, going to sleep\n");
     			sleep(10);
     		//**************************//
     			//*******IF CLOCK LOW*******//
     			//ONLY LOAD THE FIRST 24, then this 24 bits moves through the LED strand to the place it need to be//
     			//Blue LSB gets loaded first
     		//if returned value then load a new clock value, the data gets latched by the serial clock on the rising edge
-    		}else if( returnedValue == 0 ){
+    		}else if( gpio_return_value == 0 ){
 
     			//load the blue data from the blue binary location into the data gpio
     			if( (i < 8) && (bluep >= 0)){
