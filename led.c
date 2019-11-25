@@ -322,7 +322,7 @@ int main(int argc, char *argv[]){
     				PDEBUG("Inside Red If Statement\n");
     				PDEBUG("redp = %d\n", redp);
     				//loads the LSB first up to the MSB
-    				int binSet = *(red_binary_num+greenp);
+    				int binSet = *(red_binary_num+redp);
     				PDEBUG("binSet = %d\n", binSet);
 			    	redp--;
     			    //if binValue is a 1 or 0 set function appropriately
