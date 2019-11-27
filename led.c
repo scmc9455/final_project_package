@@ -240,10 +240,10 @@ int main(int argc, char *argv[]){
 
 	//set so not equal to 1
     itime.it_value.tv_sec = 0;
-    itime.it_value.tv_nsec = 100;
+    itime.it_value.tv_nsec = 1000;
 	//set for 1 second intervals
     itime.it_interval.tv_sec = 0;
-    itime.it_interval.tv_nsec = 100;
+    itime.it_interval.tv_nsec = 1000;
 	//set the timer and arm it *Timer running*
     PDEBUG("Timer settime called\n");
     ret = timer_settime(timer_id, CLOCK_REALTIME, &itime, NULL);
