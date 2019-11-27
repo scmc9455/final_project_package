@@ -29,8 +29,9 @@
 #define PDEBUG(fmt,args...) /*don't print anything*/
 #endif
 
-#define LED_CLOCK 		53 //gpio led clock
-#define LED_DATA		54 //gpio led clock data
+//LED GPIO is port x 32 + pin number
+#define LED_CLOCK 		48 //gpio led clock
+#define LED_DATA		60 //gpio led clock data
 
 #define CLOCKS_PER_LED 	24
 #define BINARY_NUM		8 //bits per color
