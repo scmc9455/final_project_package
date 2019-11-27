@@ -9,7 +9,7 @@
 // Used for Final Project of UC Boulder ECEN5013
 //***********************************************************************************************
 
-#define DEBUG 1
+#define DEBUG 0
 
 #include "led.h"
 #include <stdio.h>
@@ -111,18 +111,21 @@ int main(int argc, char *argv[]){
     red_binary_num = malloc(BINARY_NUM * sizeof(int));
     if(red_binary_num == NULL){
     	PDEBUG("FAIL:red_binary_num = NULL\n");
+    	syslog(LOG_ERR,"FAIL: red_binary_num malloc error");
     	return -1;
     }
 
     green_binary_num = malloc(BINARY_NUM * sizeof(int));
     if(green_binary_num == NULL){
         PDEBUG("FAIL:green_binary_num = NULL\n");
+        syslog(LOG_ERR,"FAIL: green_binary_num malloc error");
         return -1;
     }
 
     blue_binary_num = malloc(BINARY_NUM * sizeof(int));
     if(blue_binary_num == NULL){
         PDEBUG("FAIL:blue_binary_num = NULL\n");
+        syslog(LOG_ERR,"FAIL: blue_binary_num malloc error");
         return -1;
     }
 
@@ -135,6 +138,7 @@ int main(int argc, char *argv[]){
     	PDEBUG("led_position = %d\n", led_position);
     	//if the position is greater then 17 then it is beyond the strand length
     	if(led_position > 17){
+    		syslog(LOG_ERR,"FAIL: led strip position number to large");
     		//number to large
     		return -1;
     	}
@@ -147,6 +151,7 @@ int main(int argc, char *argv[]){
     	int red = atoi(argv[2]);
     	PDEBUG("red = %d\n", red);
     	if(red > 255){
+    		syslog(LOG_ERR,"FAIL: red number to large");
     		//number to large
     		return -1;
     	}
@@ -163,6 +168,7 @@ int main(int argc, char *argv[]){
     	int green = atoi(argv[3]);
     	PDEBUG("green = %d\n", green);
     	if(green > 255){
+    		syslog(LOG_ERR,"FAIL: green number to large");
     		//number to large
     		return -1;
     	}
@@ -179,6 +185,7 @@ int main(int argc, char *argv[]){
     	int blue = atoi(argv[4]);
     	PDEBUG("blue = %d\n", blue);
     	if(blue > 255){
+    		syslog(LOG_ERR,"FAIL: blue number to large");
     		//number to large
     		return -1;
     	}
@@ -198,6 +205,7 @@ int main(int argc, char *argv[]){
     	//failed without input data
     	PDEBUG("Wrong number on input arguments = %d\n", (argc-1));
     	PDEBUG("USAGE 4 inputs only: LED_POSITION RED_NUMBER GREEN_NUMBER BLUE_NUMBER\n");
+    	syslog(LOG_ERR,"USAGE ERROR: not enough arguments passed");
     	return -1;
     }
 
@@ -246,6 +254,7 @@ int main(int argc, char *argv[]){
     itime.it_interval.tv_nsec = 1000;
 	//set the timer and arm it *Timer running*
     PDEBUG("Timer settime called\n");
+    syslog(LOG_INFO,"timer_settime started");
     ret = timer_settime(timer_id, CLOCK_REALTIME, &itime, NULL);
     if(ret < 0){
     	PDEBUG("Timer SetTime Fail\n");
@@ -261,15 +270,17 @@ int main(int argc, char *argv[]){
     //using the timer this loop counts 24 clocks based on the timing of the timer interval
     for( i=0; i<(clock_count+1); i++ ){
     		PDEBUG("Inside for loop: i=%d\n",i);
+    		syslog(LOG_INFO,"inside for loop: i=%d",i);
     		//sleep for up to 10 seconds
     		sleep(10);
     		//get the value of the LED clock, if low load a new binary value
     		//gpio_return_value has been changed in the interrupt;
 			PDEBUG("gpio_return_value = %d\n", gpio_return_value);
-
+			syslog(LOG_INFO,"GPIO return value = %d", gpio_return_value);
     		//if clock is high go back to sleep to stop
     		if(gpio_return_value == 1){
     			PDEBUG("gpio_return_value is 1, going to sleep\n");
+    			syslog(LOG_INFO, "gpio_return_value = 1");
     			sleep(10);
     		//**************************//
     			//*******IF CLOCK LOW*******//
@@ -281,6 +292,7 @@ int main(int argc, char *argv[]){
     			//load the blue data from the blue binary location into the data gpio
     			if( (i < 8) && (bluep >= 0)){
     				PDEBUG("Inside Blue If Statement\n");
+    				syslog(LOG_INFO, "inside Blue statement: bluep=%d", bluep);
     				PDEBUG("bluep = %d\n", bluep);
     				//loads the LSB first up to the MSB
     				int binSet = *(blue_binary_num+bluep);
@@ -301,6 +313,7 @@ int main(int argc, char *argv[]){
     			//load the blue data from the blue binary location into the data gpio
     			if( ((i > 7) && (i < 16)) && (greenp >= 0)){
     				PDEBUG("Inside Green If Statement\n");
+    				syslog(LOG_INFO, "inside Green statement: greenp=%d", greenp);
     				PDEBUG("greenp = %d\n", greenp);
     				//loads the LSB first up to the MSB
     				int binSet = *(green_binary_num+greenp);
@@ -321,6 +334,7 @@ int main(int argc, char *argv[]){
     			//load the blue data from the blue binary location into the data gpio
     			if( ((i > 15) && (i < 25)) && (redp >= 0)){
     				PDEBUG("Inside Red If Statement\n");
+    				syslog(LOG_INFO, "inside Red statement: Redp=%d", redp);
     				PDEBUG("redp = %d\n", redp);
     				//loads the LSB first up to the MSB
     				int binSet = *(red_binary_num+redp);
@@ -329,11 +343,14 @@ int main(int argc, char *argv[]){
     			    //if binValue is a 1 or 0 set function appropriately
     			    if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
+        				syslog(LOG_INFO, "GPIO Data set to high");
     			    	gpio_set_value(LED_DATA, HIGH);
     			    }
     			    if(binSet == 0){
     					PDEBUG("GPIO Data Set LOW\n");
-    			    	gpio_set_value(LED_DATA, LOW);
+        				syslog(LOG_INFO, "GPIO Data set to low");
+
+    					gpio_set_value(LED_DATA, LOW);
     			    }
     			}//end of red data load
 
@@ -343,6 +360,7 @@ int main(int argc, char *argv[]){
 
     //finally set clock low to latch the data into the intended LED in the strand
 	PDEBUG("GPIO CLOCK Set LOW for latching data\n");
+	syslog(LOG_INFO, "GPIO clock set to low");
     gpio_set_value(LED_CLOCK,LOW);
 
     return 0;
