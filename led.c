@@ -48,6 +48,7 @@ void interruptHandler(int sig){
     uint32_t ret;
     gpio_get_value(LED_CLOCK, &ret);
     PDEBUG("Inside interrupt handler: ret = %d\n", ret);
+    syslog(LOG_INFO, "Inside Interrupt Handler");
 
     if(ret == 0){
     	gpio_set_value(LED_CLOCK,HIGH);
@@ -256,6 +257,7 @@ int main(int argc, char *argv[]){
     PDEBUG("Timer settime called\n");
     syslog(LOG_INFO,"timer_settime started");
     ret = timer_settime(timer_id, CLOCK_REALTIME, &itime, NULL);
+    syslog(LOG_INFO, "timer_settime ret value = %d", ret);
     if(ret < 0){
     	PDEBUG("Timer SetTime Fail\n");
     	syslog(LOG_ERR, "Timer Settime Error");
@@ -265,12 +267,13 @@ int main(int argc, char *argv[]){
     int bluep = 7;
     int greenp = 7;
     int redp = 7;
+    syslog(LOG_INFO, "Reached pointer after the bluep, greenp, and redp");
 
     //this covers the first led load, the clocking needs to be loaded all the way through the strip
     //using the timer this loop counts 24 clocks based on the timing of the timer interval
     for( i=0; i<(clock_count+1); i++ ){
     		PDEBUG("Inside for loop: i=%d\n",i);
-    		syslog(LOG_INFO,"inside for loop: i=%d",i);
+    		syslog(LOG_INFO,"inside FOR loop: i=%d",i);
     		//sleep for up to 10 seconds
     		sleep(10);
     		//get the value of the LED clock, if low load a new binary value
