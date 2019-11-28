@@ -249,10 +249,10 @@ int main(int argc, char *argv[]){
 
 	//set so not equal to 1
     itime.it_value.tv_sec = 0;
-    itime.it_value.tv_nsec = 5000;
+    itime.it_value.tv_nsec = 1000000000;
 	//set for 1 second intervals
     itime.it_interval.tv_sec = 0;
-    itime.it_interval.tv_nsec = 5000;
+    itime.it_interval.tv_nsec = 1000000000;
 	//set the timer and arm it *Timer running*
     PDEBUG("Timer settime called\n");
     syslog(LOG_INFO,"timer_settime started");
