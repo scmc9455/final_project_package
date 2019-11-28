@@ -261,7 +261,6 @@ int main(int argc, char *argv[]){
     if(ret < 0){
     	PDEBUG("Timer SetTime Fail\n");
     	syslog(LOG_ERR, "Timer Settime Error");
-    	syslog();
     }
     
     uint32_t gpio_return_value = 0;
