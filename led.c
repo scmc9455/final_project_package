@@ -48,7 +48,7 @@ void interruptHandler(int sig){
     uint32_t ret;
     gpio_get_value(LED_CLOCK, &ret);
     PDEBUG("Inside interrupt handler: ret = %d\n", ret);
-    syslog(LOG_INFO, "Inside Interrupt Handler");
+    syslog(LOG_INFO, "Inside Interrupt Handler: GPIO ret=%d",ret);
 
     if(ret == 0){
     	gpio_set_value(LED_CLOCK,HIGH);
