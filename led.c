@@ -46,18 +46,27 @@ uint32_t gpio_return_value = 0;
 void interruptHandler(int sig){
 
     uint32_t ret = 0;
-    gpio_get_value(LED_CLOCK, &ret);
+    if(gpio_get_value(LED_CLOCK, &ret){
+    	syslog(LOG_INFO, "gpio_get_value error");
+    }
+
     PDEBUG("Inside interrupt handler: ret = %d\n", ret);
     syslog(LOG_INFO, "Inside Interrupt Handler: GPIO ret=%d",ret);
 
     if(ret == 0){
-    	gpio_set_value(LED_CLOCK, HIGH);
+    	if(gpio_set_value(LED_CLOCK, HIGH)){
+    		syslog(LOG_INFO, "gpio_set_value error");
+    	}
+
     	gpio_return_value = 1;
     	PDEBUG("LED_CLOCK HIGH: ret = %d\n", ret);
     	syslog(LOG_INFO, "Setting LED_CLOCK HIGH");
 
     }else{
-    	gpio_set_value(LED_CLOCK, LOW);
+    	if(gpio_set_value(LED_CLOCK, LOW)){
+    		syslog(LOG_INFO, "gpio_set_value error");
+    	}
+
     	gpio_return_value = 0;
     	PDEBUG("LED_CLOCK LOW: ret = %d\n", ret);
     	syslog(LOG_INFO, "Setting LED_CLOCK LOW");
@@ -266,10 +275,10 @@ int main(int argc, char *argv[]){
 
 	//set so not equal to 1
     itime.it_value.tv_sec = 0;
-    itime.it_value.tv_nsec = 500000;
+    itime.it_value.tv_nsec = 6000000;
 	//set for 1 second intervals
     itime.it_interval.tv_sec = 0;
-    itime.it_interval.tv_nsec = 500000;
+    itime.it_interval.tv_nsec = 6000000;
 	//set the timer and arm it *Timer running*
     PDEBUG("Timer settime called\n");
     syslog(LOG_INFO,"timer_settime started");
