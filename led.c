@@ -9,7 +9,7 @@
 // Used for Final Project of UC Boulder ECEN5013
 //***********************************************************************************************
 
-#define DEBUG 0
+#define DEBUG 1
 
 #include "led.h"
 #include <stdio.h>
@@ -279,7 +279,7 @@ int main(int argc, char *argv[]){
     		//get the value of the LED clock, if low load a new binary value
     		//gpio_return_value has been changed in the interrupt;
 			PDEBUG("gpio_return_value = %d\n", gpio_return_value);
-			syslog(LOG_INFO,"GPIO return value = %d", gpio_return_value);
+
     		//if clock is high go back to sleep to stop
     		if(gpio_return_value == 1){
     			PDEBUG("gpio_return_value is 1, going to sleep\n");
