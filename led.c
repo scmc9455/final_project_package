@@ -271,7 +271,6 @@ int main(int argc, char *argv[]){
     	syslog(LOG_ERR, "Timer Settime Error");
     }
     
-    uint32_t gpio_return_value = 0;
     int bluep = 7;
     int greenp = 7;
     int redp = 7;
@@ -301,7 +300,7 @@ int main(int argc, char *argv[]){
     		//if returned value then load a new clock value, the data gets latched by the serial clock on the rising edge
     		}else if( gpio_return_value == 0 ){
 
-    			PDEBUG("GPIO return value is 0");
+    			PDEBUG("GPIO return value is 0\n");
     			syslog(LOG_INFO, "GPIO return value is 0");
     			//load the blue data from the blue binary location into the data gpio
     			if( (i < 8) && (bluep >= 0)){
