@@ -48,9 +48,9 @@ bool sleepVar = true;
 void interruptHandler(int sig){
 
     uint32_t ret = 0;
-    if(gpio_get_value(LED_CLOCK, &ret)){
+    /*if(gpio_get_value(LED_CLOCK, &ret)){
     	syslog(LOG_INFO, "gpio_get_value error");
-    }
+    }*/
 
     PDEBUG("Inside interrupt handler: ret = %d\n", ret);
     syslog(LOG_INFO, "Inside Interrupt Handler: GPIO ret=%d",ret);
