@@ -56,22 +56,9 @@ void interruptHandler(int sig){
     syslog(LOG_INFO, "Inside Interrupt Handler: GPIO ret=%d",ret);
 
     if(ret == 0){
-    	if(gpio_set_value(LED_CLOCK, HIGH)){
-    		syslog(LOG_INFO, "gpio_set_value error");
-    	}
-
     	gpio_return_value = 1;
-    	PDEBUG("LED_CLOCK HIGH: ret = %d\n", ret);
-    	syslog(LOG_INFO, "Setting LED_CLOCK HIGH");
-
     }else{
-    	if(gpio_set_value(LED_CLOCK, LOW)){
-    		syslog(LOG_INFO, "gpio_set_value error");
-    	}
-
     	gpio_return_value = 0;
-    	PDEBUG("LED_CLOCK LOW: ret = %d\n", ret);
-    	syslog(LOG_INFO, "Setting LED_CLOCK LOW");
     }
 
     sleepVar = false;
@@ -316,7 +303,22 @@ int main(int argc, char *argv[]){
     		while(sleepVar){
     			syslog(LOG_INFO, "Inside busy while loop");
     		}
+    	    //setting the clock value
+    		if(ret == 0){
+    	    	if(gpio_set_value(LED_CLOCK, HIGH)){
+    	    		syslog(LOG_INFO, "gpio_set_value error");
+    	    	}
+    	    	PDEBUG("LED_CLOCK HIGH: ret = %d\n", ret);
+    	    	syslog(LOG_INFO, "Setting LED_CLOCK HIGH");
+    	    }else{
+    	    	if(gpio_set_value(LED_CLOCK, LOW)){
+    	    		syslog(LOG_INFO, "gpio_set_value error");
+    	    	}
+    	    	PDEBUG("LED_CLOCK LOW: ret = %d\n", ret);
+    	    	syslog(LOG_INFO, "Setting LED_CLOCK LOW");
+    	    }
     		sleepVar = true;
+    		//***********
 
     		syslog(LOG_INFO, "Coming out of sleep");
     		//get the value of the LED clock, if low load a new binary value
