@@ -253,6 +253,14 @@ int main(int argc, char *argv[]){
     if(ret < 0){
     	PDEBUG("Timer Create Fail\n");
     	syslog(LOG_ERR, "Timer Create Error");
+    	//removing setup
+    	free(red_binary_num);
+    	free(green_binary_num);
+    	free(blue_binary_num);
+    	    //release the GPIO
+    	gpio_unexport(LED_DATA);
+    	gpio_unexport(LED_CLOCK);
+    	return -1;
     }
 
 	//set so not equal to 1
@@ -269,6 +277,15 @@ int main(int argc, char *argv[]){
     if(ret < 0){
     	PDEBUG("Timer SetTime Fail\n");
     	syslog(LOG_ERR, "Timer Settime Error");
+    	//removing initializations
+    	timer_delete(timer_id);
+    	free(red_binary_num);
+    	free(green_binary_num);
+    	free(blue_binary_num);
+    	    //release the GPIO
+    	gpio_unexport(LED_DATA);
+    	gpio_unexport(LED_CLOCK);
+    	return -1;
     }
     
     int bluep = 7;
