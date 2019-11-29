@@ -38,7 +38,7 @@
 
 //keeping track of how many clocking cycles have happened - 24 per LED
 int clock_count;
-uint32_t gpio_return_value;
+uint32_t gpio_return_value = 0;
 
 //******************************************
 //interrupt handler for signal interrupts
@@ -51,15 +51,16 @@ void interruptHandler(int sig){
     syslog(LOG_INFO, "Inside Interrupt Handler: GPIO ret=%d",ret);
 
     if(ret == 0){
-    	gpio_set_value(LED_CLOCK,HIGH);
-        PDEBUG("LED_CLOCK HIGH: ret = %d\n", ret);
-    	syslog(LOG_INFO, "Setting LED_CLOCK HIGH");
-    	gpio_return_value = 0;
-    }else{
-    	gpio_set_value(LED_CLOCK,LOW);
-        PDEBUG("LED_CLOCK LOW: ret = %d\n", ret);
-    	syslog(LOG_INFO, "Setting LED_CLOCK LOW");
+    	gpio_set_value(LED_CLOCK, HIGH);
     	gpio_return_value = 1;
+    	PDEBUG("LED_CLOCK HIGH: ret = %d\n", ret);
+    	syslog(LOG_INFO, "Setting LED_CLOCK HIGH");
+
+    }else{
+    	gpio_set_value(LED_CLOCK, LOW);
+    	gpio_return_value = 0;
+    	PDEBUG("LED_CLOCK LOW: ret = %d\n", ret);
+    	syslog(LOG_INFO, "Setting LED_CLOCK LOW");
     }
 
 }
@@ -286,12 +287,12 @@ int main(int argc, char *argv[]){
     		//get the value of the LED clock, if low load a new binary value
     		//gpio_return_value has been changed in the interrupt;
 			PDEBUG("gpio_return_value = %d\n", gpio_return_value);
-			syslog(LOG_INFO, "gpio_return_value = %d\n", gpio_return_value);
+			syslog(LOG_INFO, "***gpio_return_value = %d\n", gpio_return_value);
 
     		//if clock is high go back to sleep to stop
     		if(gpio_return_value == 1){
-    			PDEBUG("gpio_return_value is 1, going to sleep\n");
-    			syslog(LOG_INFO, "gpio_return_value = 1");
+    			PDEBUG("gpio_return_value is 1 (Clock is high), going to sleep\n");
+    			syslog(LOG_INFO, "Clock was set to HIGH, going to sleep");
     			sleep(10);
     		//**************************//
     			//*******IF CLOCK LOW*******//
@@ -300,6 +301,8 @@ int main(int argc, char *argv[]){
     		//if returned value then load a new clock value, the data gets latched by the serial clock on the rising edge
     		}else if( gpio_return_value == 0 ){
 
+    			PDEBUG("GPIO return value is 0");
+    			syslog(LOG_INFO, "GPIO return value is 0");
     			//load the blue data from the blue binary location into the data gpio
     			if( (i < 8) && (bluep >= 0)){
     				PDEBUG("Inside Blue If Statement\n");
