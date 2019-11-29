@@ -46,7 +46,7 @@ uint32_t gpio_return_value = 0;
 void interruptHandler(int sig){
 
     uint32_t ret = 0;
-    if(gpio_get_value(LED_CLOCK, &ret){
+    if(gpio_get_value(LED_CLOCK, &ret)){
     	syslog(LOG_INFO, "gpio_get_value error");
     }
 
