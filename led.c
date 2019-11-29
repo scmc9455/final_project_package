@@ -250,6 +250,7 @@ int main(int argc, char *argv[]){
     //create the timer
     PDEBUG("Calling Timer Create\n");
     ret = timer_create(CLOCK_MONOTONIC, NULL, &timer_id);
+    syslog(LOG_INFO, "Timer Create: ret = %d", ret);
     if(ret < 0){
     	PDEBUG("Timer Create Fail\n");
     	syslog(LOG_ERR, "Timer Create Error");
