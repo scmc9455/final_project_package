@@ -310,6 +310,7 @@ int main(int argc, char *argv[]){
     		syslog(LOG_INFO,"inside FOR loop: i=%d",i);
     		//sleep for up to 10 seconds
     		sleep(1);
+    		syslog(LOG_INFO, "Coming out of sleep");
     		//get the value of the LED clock, if low load a new binary value
     		//gpio_return_value has been changed in the interrupt;
 			PDEBUG("gpio_return_value = %d\n", gpio_return_value);
@@ -320,6 +321,7 @@ int main(int argc, char *argv[]){
     			PDEBUG("gpio_return_value is 1 (Clock is high), going to sleep\n");
     			syslog(LOG_INFO, "Clock was set to HIGH, going to sleep");
     			sleep(1);
+        		syslog(LOG_INFO, "Coming out of sleep");
     		}
     		//**************************//
     		PDEBUG("2 - gpio_return_value = %d\n", gpio_return_value);
