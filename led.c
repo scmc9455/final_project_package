@@ -45,16 +45,19 @@ uint32_t gpio_return_value;
 //******************************************
 void interruptHandler(int sig){
 
-    uint32_t ret;
-    gpio_get_value(LED_CLOCK, &ret);
+    uint32_t ret = 0;
     PDEBUG("Inside interrupt handler: ret = %d\n", ret);
     syslog(LOG_INFO, "Inside Interrupt Handler: GPIO ret=%d",ret);
 
     if(ret == 0){
     	gpio_set_value(LED_CLOCK,HIGH);
+        PDEBUG("LED_CLOCK HIGH: ret = %d\n", ret);
+    	syslog(LOG_INFO, "Setting LED_CLOCK HIGH");
     	gpio_return_value = 0;
     }else{
     	gpio_set_value(LED_CLOCK,LOW);
+        PDEBUG("LED_CLOCK LOW: ret = %d\n", ret);
+    	syslog(LOG_INFO, "Setting LED_CLOCK LOW");
     	gpio_return_value = 1;
     }
 
@@ -151,6 +154,7 @@ int main(int argc, char *argv[]){
     	//PDEBUG("RED_input: argv[2] = %c \n", *argv[2]);
     	int red = atoi(argv[2]);
     	PDEBUG("red = %d\n", red);
+    	syslog(LOG_INFO, "red = %d\n", red);
     	if(red > 255){
     		syslog(LOG_ERR,"FAIL: red number to large");
     		//number to large
@@ -168,6 +172,7 @@ int main(int argc, char *argv[]){
     	//PDEBUG("GREEN_input: argv[3] = %c \n", *argv[3]);
     	int green = atoi(argv[3]);
     	PDEBUG("green = %d\n", green);
+    	syslog(LOG_INFO, "green = %d\n", green);
     	if(green > 255){
     		syslog(LOG_ERR,"FAIL: green number to large");
     		//number to large
@@ -185,6 +190,7 @@ int main(int argc, char *argv[]){
     	//PDEBUG("BLUE_input: argv[4] = %c \n", *argv[4]);
     	int blue = atoi(argv[4]);
     	PDEBUG("blue = %d\n", blue);
+    	syslog(LOG_INFO, "blue = %d\n", blue);
     	if(blue > 255){
     		syslog(LOG_ERR,"FAIL: blue number to large");
     		//number to large
@@ -279,6 +285,7 @@ int main(int argc, char *argv[]){
     		//get the value of the LED clock, if low load a new binary value
     		//gpio_return_value has been changed in the interrupt;
 			PDEBUG("gpio_return_value = %d\n", gpio_return_value);
+			syslog(LOG_INFO, "gpio_return_value = %d\n", gpio_return_value);
 
     		//if clock is high go back to sleep to stop
     		if(gpio_return_value == 1){
@@ -300,14 +307,17 @@ int main(int argc, char *argv[]){
     				//loads the LSB first up to the MSB
     				int binSet = *(blue_binary_num+bluep);
     				PDEBUG("binSet = %d\n", binSet);
+    				syslog(LOG_INFO, "binSet = %d\n", binSet);
     				bluep--;
     				//if binValue is a 1 or 0 set function appropriately
     				if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
+    					syslog(LOG_INFO, "GPIO_DATA Set HIGH");
     					gpio_set_value(LED_DATA, HIGH);
     				}
     				if(binSet == 0){
     					PDEBUG("GPIO Data Set LOW\n");
+    					syslog(LOG_INFO, "GPIO_DATA Set LOW");
     					gpio_set_value(LED_DATA, LOW);
     				}
     			}//end of blue data load
@@ -321,14 +331,17 @@ int main(int argc, char *argv[]){
     				//loads the LSB first up to the MSB
     				int binSet = *(green_binary_num+greenp);
     				PDEBUG("binSet = %d\n", binSet);
+    				syslog(LOG_INFO, "binSet = %d\n", binSet);
     				greenp--;
     			    //if binValue is a 1 or 0 set function appropriately
     			    if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
+    					syslog(LOG_INFO, "GPIO_DATA Set HIGH");
     			    	gpio_set_value(LED_DATA, HIGH);
     			    }
     			    if(binSet == 0){
     					PDEBUG("GPIO Data Set LOW\n");
+    					syslog(LOG_INFO, "GPIO_DATA Set LOW");
     			    	gpio_set_value(LED_DATA, LOW);
     			    }
     			}//end of green data load
@@ -342,16 +355,17 @@ int main(int argc, char *argv[]){
     				//loads the LSB first up to the MSB
     				int binSet = *(red_binary_num+redp);
     				PDEBUG("binSet = %d\n", binSet);
-			    	redp--;
+    				syslog(LOG_INFO, "binSet = %d\n", binSet);
+    				redp--;
     			    //if binValue is a 1 or 0 set function appropriately
     			    if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
-        				syslog(LOG_INFO, "GPIO Data set to high");
+        				syslog(LOG_INFO, "GPIO Data set to HIGH");
     			    	gpio_set_value(LED_DATA, HIGH);
     			    }
     			    if(binSet == 0){
     					PDEBUG("GPIO Data Set LOW\n");
-        				syslog(LOG_INFO, "GPIO Data set to low");
+        				syslog(LOG_INFO, "GPIO Data set to LOW");
 
     					gpio_set_value(LED_DATA, LOW);
     			    }
