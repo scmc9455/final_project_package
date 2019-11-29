@@ -257,10 +257,10 @@ int main(int argc, char *argv[]){
 
 	//set so not equal to 1
     itime.it_value.tv_sec = 0;
-    itime.it_value.tv_nsec = 100000;
+    itime.it_value.tv_nsec = 500000;
 	//set for 1 second intervals
     itime.it_interval.tv_sec = 0;
-    itime.it_interval.tv_nsec = 100000;
+    itime.it_interval.tv_nsec = 500000;
 	//set the timer and arm it *Timer running*
     PDEBUG("Timer settime called\n");
     syslog(LOG_INFO,"timer_settime started");
@@ -385,6 +385,16 @@ int main(int argc, char *argv[]){
 	PDEBUG("GPIO CLOCK Set LOW for latching data\n");
 	syslog(LOG_INFO, "GPIO clock set to low");
     gpio_set_value(LED_CLOCK,LOW);
+
+    //The below needs to be done to make the program reentrant
+    //free the pointers
+    timer_delete(timer_id);
+    free(red_binary_num);
+    free(green_binary_num);
+    free(blue_binary_num);
+    //release the GPIO
+    gpio_unexport(LED_DATA);
+    gpio_unexport(LED_CLOCK);
 
     return 0;
 }
