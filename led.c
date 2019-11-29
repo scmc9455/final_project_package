@@ -39,7 +39,7 @@
 //keeping track of how many clocking cycles have happened - 24 per LED
 int clock_count;
 uint32_t gpio_return_value = 0;
-bool sleepVar = True;
+bool sleepVar = TRUE;
 
 //******************************************
 //interrupt handler for signal interrupts
@@ -73,7 +73,7 @@ void interruptHandler(int sig){
     	syslog(LOG_INFO, "Setting LED_CLOCK LOW");
     }
 
-    sleepVar = False;
+    sleepVar = FALSE;
 
 }
 
@@ -327,7 +327,7 @@ int main(int argc, char *argv[]){
     			syslog(LOG_INFO, "Clock was set to HIGH, going to sleep");
     			//spin until interrupt
     			while(sleepVar);
-    			sleepVar = 1;
+    			sleepVar = TRUE;
 
         		syslog(LOG_INFO, "Coming out of sleep");
     		}
