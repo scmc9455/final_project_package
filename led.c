@@ -314,7 +314,7 @@ int main(int argc, char *argv[]){
     		syslog(LOG_INFO,"inside FOR loop: i=%d",i);
     		//sleep for up to 10 seconds
     		while(sleepVar){
-    			syslog("Inside busy while loop");
+    			syslog(LOG_INFO, "Inside busy while loop");
     		}
     		sleepVar = true;
 
@@ -330,7 +330,7 @@ int main(int argc, char *argv[]){
     			syslog(LOG_INFO, "Clock was set to HIGH, going to sleep");
     			//spin until interrupt
     			while(sleepVar){
-    				syslog("Inside busy while loop: gpio value 1");
+    				syslog(LOG_INFO, "Inside busy while loop: gpio value 1");
     			}
     			sleepVar = true;
 
