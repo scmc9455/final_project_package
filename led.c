@@ -9,7 +9,7 @@
 // Used for Final Project of UC Boulder ECEN5013
 //***********************************************************************************************
 
-#define DEBUG 0
+#define DEBUG 1
 
 #include "led.h"
 #include <stdio.h>
