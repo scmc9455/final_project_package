@@ -293,12 +293,15 @@ int main(int argc, char *argv[]){
     			PDEBUG("gpio_return_value is 1 (Clock is high), going to sleep\n");
     			syslog(LOG_INFO, "Clock was set to HIGH, going to sleep");
     			sleep(10);
+    		}
     		//**************************//
+    		PDEBUG("2 - gpio_return_value = %d\n", gpio_return_value);
+			syslog(LOG_INFO, "***2 - gpio_return_value = %d\n", gpio_return_value);
     			//*******IF CLOCK LOW*******//
     			//ONLY LOAD THE FIRST 24, then this 24 bits moves through the LED strand to the place it need to be//
     			//Blue LSB gets loaded first
     		//if returned value then load a new clock value, the data gets latched by the serial clock on the rising edge
-    		}else if( gpio_return_value == 0 ){
+    		if( gpio_return_value == 0 ){
 
     			PDEBUG("GPIO return value is 0\n");
     			syslog(LOG_INFO, "GPIO return value is 0");
