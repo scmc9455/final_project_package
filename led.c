@@ -42,11 +42,11 @@ int clock_count;
 //uint32_t gpio_return_value = 0;
 int clock_polarity = 0;
 
-/*
+
 //******************************************
 //interrupt handler for signal interrupts
 //******************************************
-void interruptHandler(int sig){
+/*void interruptHandler(int sig){
 
     uint32_t ret = 0;
     /*if(gpio_get_value(LED_CLOCK, &ret)){
@@ -103,8 +103,9 @@ int main(int argc, char *argv[]){
 	//variables
     int i, ret = 0;
 	int led_position;
-    timer_t timer_id;
-    struct itimerspec itime;
+    //timer_t timer_id;
+    //struct itimerspec itime;
+	struct timespec itime;
     int *red_binary_num;
     int *green_binary_num;
     int *blue_binary_num;
@@ -246,10 +247,10 @@ int main(int argc, char *argv[]){
     gpio_set_value(LED_DATA,HIGH);
 
 	//register the interrupt and interrupt handler
-    signal(SIGALRM, interruptHandler);
+    //signal(SIGALRM, interruptHandler);
 
-/*    //create the timer
-    PDEBUG("Calling Timer Create\n");
+    //create the timer
+/*    PDEBUG("Calling Timer Create\n");
     ret = timer_create(CLOCK_MONOTONIC, NULL, &timer_id);
     syslog(LOG_INFO, "Timer Create: ret = %d", ret);
     if(ret < 0){
@@ -290,6 +291,9 @@ int main(int argc, char *argv[]){
     	return -1;
     }
 */
+    //setting up nanosleep
+    itime.tv_sec = 0;
+    itime.tv_nsec = 10000;
     
     int bluep = 7;
     int greenp = 7;
@@ -302,7 +306,7 @@ int main(int argc, char *argv[]){
     		PDEBUG("Inside for loop: i=%d\n",i);
     		syslog(LOG_INFO,"inside FOR loop: i=%d",i);
     		//sleep for up to 10 seconds
-    		nanosleep(10000);
+    		nanosleep(&itime, NULL);
     		syslog("Coming out of sleep");
     	    //setting the clock value
    	    	if(gpio_set_value(LED_CLOCK, HIGH)){
@@ -319,7 +323,7 @@ int main(int argc, char *argv[]){
     			PDEBUG("Clock is high, going to sleep\n");
     			syslog(LOG_INFO, "Clock was set to HIGH, going to sleep");
     			//spin until interrupt
-    			nanosleep(10000);
+    			nanosleep(&itime, NULL);
         		syslog(LOG_INFO, "Coming out of sleep");
     		}
 
