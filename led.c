@@ -49,7 +49,7 @@ int clock_polarity = 0;
 /*void interruptHandler(int sig){
 
     uint32_t ret = 0;
-    /*if(gpio_get_value(LED_CLOCK, &ret)){
+    if(gpio_get_value(LED_CLOCK, &ret)){
     	syslog(LOG_INFO, "gpio_get_value error");
     }
 
@@ -101,7 +101,7 @@ int decToBinary(int decValue, int *binValue){
 int main(int argc, char *argv[]){
 
 	//variables
-    int i, ret = 0;
+    int i; //, ret = 0;
 	int led_position;
     //timer_t timer_id;
     //struct itimerspec itime;
@@ -307,7 +307,7 @@ int main(int argc, char *argv[]){
     		syslog(LOG_INFO,"inside FOR loop: i=%d",i);
     		//sleep for up to 10 seconds
     		nanosleep(&itime, NULL);
-    		syslog("Coming out of sleep");
+    		syslog(LOG_INFO, "Coming out of sleep");
     	    //setting the clock value
    	    	if(gpio_set_value(LED_CLOCK, HIGH)){
    	    		syslog(LOG_INFO, "gpio_set_value error");
