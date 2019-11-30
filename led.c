@@ -228,7 +228,7 @@ int main(int argc, char *argv[]){
     itime.tv_nsec = 50;
     //initTime for first bit load
     initTime.tv_sec = 0;
-    initTime.tv_nsec = 200;
+    initTime.tv_nsec = 100;
     
     int bluep = 7;
     int greenp = 7;
