@@ -279,15 +279,15 @@ int main(int argc, char *argv[]){
     			PDEBUG("GPIO clock_polarity is 0\n");
     			syslog(LOG_INFO, "GPIO clock_polartiy is 0");
     			//load the blue data from the blue binary location into the data gpio
-    			if( (i < 8) && (bluep >= 0)){
-    				PDEBUG("Inside Blue If Statement\n");
-    				syslog(LOG_INFO, "inside Blue statement: bluep=%d", bluep);
-    				PDEBUG("bluep = %d\n", bluep);
+    			if( (i < 8) && (redp >= 0)){
+    				PDEBUG("Inside Red If Statement\n");
+    				syslog(LOG_INFO, "inside Red statement: redp=%d", redp);
+    				PDEBUG("redp = %d\n", redp);
     				//loads the LSB first up to the MSB
-    				int binSet = *(blue_binary_num+bluep);
+    				int binSet = *(red_binary_num+redp);
     				PDEBUG("binSet = %d\n", binSet);
     				syslog(LOG_INFO, "binSet = %d\n", binSet);
-    				bluep--;
+    				redp--;
     				//if binValue is a 1 or 0 set function appropriately
     				if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
@@ -332,15 +332,15 @@ int main(int argc, char *argv[]){
 
 
     			//load the blue data from the blue binary location into the data gpio
-    			if( ((i > 15) && (i < 25)) && (redp >= 0)){
+    			if( ((i > 15) && (i < 25)) && (bluep >= 0)){
     				PDEBUG("Inside Red If Statement\n");
-    				syslog(LOG_INFO, "inside Red statement: Redp=%d", redp);
-    				PDEBUG("redp = %d\n", redp);
+    				syslog(LOG_INFO, "inside Blue statement: Redp=%d", bluep);
+    				PDEBUG("bluep = %d\n", bluep);
     				//loads the LSB first up to the MSB
-    				int binSet = *(red_binary_num+redp);
+    				int binSet = *(blue_binary_num+bluep);
     				PDEBUG("binSet = %d\n", binSet);
     				syslog(LOG_INFO, "binSet = %d\n", binSet);
-    				redp--;
+    				bluep--;
     			    //if binValue is a 1 or 0 set function appropriately
     			    if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
@@ -361,7 +361,8 @@ int main(int argc, char *argv[]){
 
     //finally set clock low to latch the data into the intended LED in the strand
 	PDEBUG("GPIO CLOCK Set LOW for latching data\n");
-	syslog(LOG_INFO, "GPIO clock set to low");
+	syslog(LOG_INFO, "GPIO clock and data set to low");
+	gpio_set_value(LED_DATA, LOW);
     gpio_set_value(LED_CLOCK,LOW);
 
     //The below needs to be done to make the program reentrant
