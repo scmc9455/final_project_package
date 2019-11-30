@@ -39,9 +39,10 @@
 
 //keeping track of how many clocking cycles have happened - 24 per LED
 int clock_count;
-uint32_t gpio_return_value = 0;
-bool sleepVar = true;
+//uint32_t gpio_return_value = 0;
+int clock_polarity = 0;
 
+/*
 //******************************************
 //interrupt handler for signal interrupts
 //******************************************
@@ -50,7 +51,7 @@ void interruptHandler(int sig){
     uint32_t ret = 0;
     /*if(gpio_get_value(LED_CLOCK, &ret)){
     	syslog(LOG_INFO, "gpio_get_value error");
-    }*/
+    }
 
     PDEBUG("Inside interrupt handler: ret = %d\n", ret);
     syslog(LOG_INFO, "Inside Interrupt Handler: GPIO ret=%d",ret);
@@ -63,7 +64,7 @@ void interruptHandler(int sig){
 
     sleepVar = false;
 
-}
+}*/
 
 //******************************************
 // Integer to binary
@@ -247,7 +248,7 @@ int main(int argc, char *argv[]){
 	//register the interrupt and interrupt handler
     signal(SIGALRM, interruptHandler);
 
-    //create the timer
+/*    //create the timer
     PDEBUG("Calling Timer Create\n");
     ret = timer_create(CLOCK_MONOTONIC, NULL, &timer_id);
     syslog(LOG_INFO, "Timer Create: ret = %d", ret);
@@ -288,6 +289,7 @@ int main(int argc, char *argv[]){
     	gpio_unexport(LED_CLOCK);
     	return -1;
     }
+*/
     
     int bluep = 7;
     int greenp = 7;
@@ -300,55 +302,43 @@ int main(int argc, char *argv[]){
     		PDEBUG("Inside for loop: i=%d\n",i);
     		syslog(LOG_INFO,"inside FOR loop: i=%d",i);
     		//sleep for up to 10 seconds
-    		while(sleepVar){
-    			syslog(LOG_INFO, "Inside busy while loop");
-    		}
+    		nanosleep(10000);
+    		syslog("Coming out of sleep");
     	    //setting the clock value
-    		if(ret == 0){
-    	    	if(gpio_set_value(LED_CLOCK, HIGH)){
-    	    		syslog(LOG_INFO, "gpio_set_value error");
-    	    	}
-    	    	PDEBUG("LED_CLOCK HIGH: ret = %d\n", ret);
-    	    	syslog(LOG_INFO, "Setting LED_CLOCK HIGH");
-    	    }else{
-    	    	if(gpio_set_value(LED_CLOCK, LOW)){
-    	    		syslog(LOG_INFO, "gpio_set_value error");
-    	    	}
-    	    	PDEBUG("LED_CLOCK LOW: ret = %d\n", ret);
-    	    	syslog(LOG_INFO, "Setting LED_CLOCK LOW");
-    	    }
-    		sleepVar = true;
+   	    	if(gpio_set_value(LED_CLOCK, HIGH)){
+   	    		syslog(LOG_INFO, "gpio_set_value error");
+   	    	}
+
+        	clock_polarity = 1;
+   	    	PDEBUG("LED_CLOCK HIGH");
+   	    	syslog(LOG_INFO, "Setting LED_CLOCK HIGH");
     		//***********
 
-    		syslog(LOG_INFO, "Coming out of sleep");
-    		//get the value of the LED clock, if low load a new binary value
-    		//gpio_return_value has been changed in the interrupt;
-			PDEBUG("gpio_return_value = %d\n", gpio_return_value);
-			syslog(LOG_INFO, "***gpio_return_value = %d\n", gpio_return_value);
-
     		//if clock is high go back to sleep to stop
-    		if(gpio_return_value == 1){
-    			PDEBUG("gpio_return_value is 1 (Clock is high), going to sleep\n");
+    		if(clock_polarity == 1){
+    			PDEBUG("Clock is high, going to sleep\n");
     			syslog(LOG_INFO, "Clock was set to HIGH, going to sleep");
     			//spin until interrupt
-    			while(sleepVar){
-    				syslog(LOG_INFO, "Inside busy while loop: gpio value 1");
-    			}
-    			sleepVar = true;
-
+    			nanosleep(10000);
         		syslog(LOG_INFO, "Coming out of sleep");
     		}
+
+    		clock_polarity = 0;
+    		//setting the clock value
+    		if(gpio_set_value(LED_CLOCK, LOW)){
+    			syslog(LOG_INFO, "gpio_set_value error");
+    		}
+   	    	PDEBUG("LED_CLOCK LOW");
+   	    	syslog(LOG_INFO, "Setting LED_CLOCK LOW");
     		//**************************//
-    		PDEBUG("2 - gpio_return_value = %d\n", gpio_return_value);
-			syslog(LOG_INFO, "***2 - gpio_return_value = %d\n", gpio_return_value);
     			//*******IF CLOCK LOW*******//
     			//ONLY LOAD THE FIRST 24, then this 24 bits moves through the LED strand to the place it need to be//
     			//Blue LSB gets loaded first
     		//if returned value then load a new clock value, the data gets latched by the serial clock on the rising edge
-    		if( gpio_return_value == 0 ){
+    		if( clock_polarity == 0 ){
 
-    			PDEBUG("GPIO return value is 0\n");
-    			syslog(LOG_INFO, "GPIO return value is 0");
+    			PDEBUG("GPIO clock_polarity is 0\n");
+    			syslog(LOG_INFO, "GPIO clock_polartiy is 0");
     			//load the blue data from the blue binary location into the data gpio
     			if( (i < 8) && (bluep >= 0)){
     				PDEBUG("Inside Blue If Statement\n");
@@ -432,7 +422,7 @@ int main(int argc, char *argv[]){
 
     //The below needs to be done to make the program reentrant
     //free the pointers
-    timer_delete(timer_id);
+    //timer_delete(timer_id);
     free(red_binary_num);
     free(green_binary_num);
     free(blue_binary_num);
