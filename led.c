@@ -39,32 +39,7 @@
 
 //keeping track of how many clocking cycles have happened - 24 per LED
 int clock_count;
-//uint32_t gpio_return_value = 0;
 int clock_polarity = 0;
-
-
-//******************************************
-//interrupt handler for signal interrupts
-//******************************************
-/*void interruptHandler(int sig){
-
-    uint32_t ret = 0;
-    if(gpio_get_value(LED_CLOCK, &ret)){
-    	syslog(LOG_INFO, "gpio_get_value error");
-    }
-
-    PDEBUG("Inside interrupt handler: ret = %d\n", ret);
-    syslog(LOG_INFO, "Inside Interrupt Handler: GPIO ret=%d",ret);
-
-    if(ret == 0){
-    	gpio_return_value = 1;
-    }else{
-    	gpio_return_value = 0;
-    }
-
-    sleepVar = false;
-
-}*/
 
 //******************************************
 // Integer to binary
@@ -101,11 +76,12 @@ int decToBinary(int decValue, int *binValue){
 int main(int argc, char *argv[]){
 
 	//variables
-    int i; //, ret = 0;
+    int i;
 	int led_position;
     //timer_t timer_id;
     //struct itimerspec itime;
 	struct timespec itime;
+	struct timespec initTime;
     int *red_binary_num;
     int *green_binary_num;
     int *blue_binary_num;
@@ -218,7 +194,8 @@ int main(int argc, char *argv[]){
     	PDEBUG("USAGE 4 inputs only: LED_POSITION RED_NUMBER GREEN_NUMBER BLUE_NUMBER\n");
     	syslog(LOG_ERR,"USAGE ERROR: not enough arguments passed");
     	return -1;
-    }
+
+    }//end of argc statement
 
     //******************************************************
     //   Setup the timer
@@ -242,58 +219,16 @@ int main(int argc, char *argv[]){
 
     PDEBUG("Setting up initial pin values\n");
   	//set the initial value of the data
-    gpio_set_value(LED_CLOCK,HIGH);
+    gpio_set_value(LED_CLOCK,LOW);
   	//set the initial value of the data
-    gpio_set_value(LED_DATA,HIGH);
+    gpio_set_value(LED_DATA,LOW);
 
-	//register the interrupt and interrupt handler
-    //signal(SIGALRM, interruptHandler);
-
-    //create the timer
-/*    PDEBUG("Calling Timer Create\n");
-    ret = timer_create(CLOCK_MONOTONIC, NULL, &timer_id);
-    syslog(LOG_INFO, "Timer Create: ret = %d", ret);
-    if(ret < 0){
-    	PDEBUG("Timer Create Fail\n");
-    	syslog(LOG_ERR, "Timer Create Error");
-    	//removing setup
-    	free(red_binary_num);
-    	free(green_binary_num);
-    	free(blue_binary_num);
-    	    //release the GPIO
-    	gpio_unexport(LED_DATA);
-    	gpio_unexport(LED_CLOCK);
-    	return -1;
-    }
-
-	//set so not equal to 1
-    itime.it_value.tv_sec = 0;
-    itime.it_value.tv_nsec = 1000000;
-	//set for 1 second intervals
-    itime.it_interval.tv_sec = 0;
-    itime.it_interval.tv_nsec = 1000000;
-	//set the timer and arm it *Timer running*
-    PDEBUG("Timer settime called\n");
-    syslog(LOG_INFO,"timer_settime started");
-    ret = timer_settime(timer_id, CLOCK_REALTIME, &itime, NULL);
-    syslog(LOG_INFO, "timer_settime ret value = %d", ret);
-    if(ret < 0){
-    	PDEBUG("Timer SetTime Fail\n");
-    	syslog(LOG_ERR, "Timer Settime Error");
-    	//removing initializations
-    	timer_delete(timer_id);
-    	free(red_binary_num);
-    	free(green_binary_num);
-    	free(blue_binary_num);
-    	    //release the GPIO
-    	gpio_unexport(LED_DATA);
-    	gpio_unexport(LED_CLOCK);
-    	return -1;
-    }
-*/
     //setting up nanosleep
     itime.tv_sec = 0;
-    itime.tv_nsec = 100;
+    itime.tv_nsec = 50;
+    //initTime for first bit load
+    initTime.tv_sec = 0;
+    initTime.tv_nsec = 200;
     
     int bluep = 7;
     int greenp = 7;
@@ -363,6 +298,11 @@ int main(int argc, char *argv[]){
     					PDEBUG("GPIO Data Set LOW\n");
     					syslog(LOG_INFO, "GPIO_DATA Set LOW");
     					gpio_set_value(LED_DATA, LOW);
+    				}
+
+    				//need to add an initial time interval before clock starts
+    				if(i == 0){
+    					nanosleep(&initTime ,NULL);
     				}
     			}//end of blue data load
 
