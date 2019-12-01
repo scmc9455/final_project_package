@@ -82,6 +82,7 @@ int main(int argc, char *argv[]){
     //struct itimerspec itime;
 	struct timespec itime;
 	struct timespec initTime;
+	struct timespec endTime;
     int *red_binary_num;
     int *green_binary_num;
     int *blue_binary_num;
@@ -229,6 +230,10 @@ int main(int argc, char *argv[]){
     //initTime for first bit load
     initTime.tv_sec = 0;
     initTime.tv_nsec = 100;
+    //endTime for first bit load
+    endTime.tv_sec = 0;
+    endTime.tv_nsec = 500000;
+
     
     int bluep = 7;
     int greenp = 7;
@@ -353,8 +358,13 @@ int main(int argc, char *argv[]){
 
     					gpio_set_value(LED_DATA, LOW);
     			    }
+    			    
     			}//end of red data load
 
+				//need to add an end time interval for latching clock starts
+				if(i == 25){
+					nanosleep(&endTime, NULL);
+				}
 
     		}//end of returned value check
     }//end of for loop
@@ -362,8 +372,9 @@ int main(int argc, char *argv[]){
     //finally set clock low to latch the data into the intended LED in the strand
 	PDEBUG("GPIO CLOCK Set LOW for latching data\n");
 	syslog(LOG_INFO, "GPIO clock and data set to low");
-	gpio_set_value(LED_DATA, LOW);
     gpio_set_value(LED_CLOCK,LOW);
+    nanosleep(&endTime, NULL);
+	gpio_set_value(LED_DATA, LOW);
 
     //The below needs to be done to make the program reentrant
     //free the pointers
