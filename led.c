@@ -224,7 +224,7 @@ int main(int argc, char *argv[]){
   	//set the initial value of the data
     gpio_set_value(LED_DATA,LOW);
     
-    nanosleep(&endTime. NULL);
+    nanosleep(&endTime, NULL);
 
     //setting up nanosleep
     itime.tv_sec = 0;
