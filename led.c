@@ -223,6 +223,8 @@ int main(int argc, char *argv[]){
     gpio_set_value(LED_CLOCK,LOW);
   	//set the initial value of the data
     gpio_set_value(LED_DATA,LOW);
+    
+    nanosleep(&endTime. NULL);
 
     //setting up nanosleep
     itime.tv_sec = 0;
@@ -362,9 +364,9 @@ int main(int argc, char *argv[]){
     			}//end of red data load
 
 				//need to add an end time interval for latching clock starts
-				if(i == 25){
-					nanosleep(&endTime, NULL);
-				}
+				//if(i == 25){
+				//	nanosleep(&endTime, NULL);
+				//}
 
     		}//end of returned value check
     }//end of for loop
