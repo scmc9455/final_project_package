@@ -231,7 +231,7 @@ int main(int argc, char *argv[]){
 
     //setting up nanosleep
     itime.tv_sec = 0;
-    itime.tv_nsec = 10000;
+    itime.tv_nsec = 1;
     //initTime for first bit load
     initTime.tv_sec = 0;
     initTime.tv_nsec = 100;
