@@ -46,8 +46,8 @@ timer_t timerid;
 //
 //
 //******************************************
-void timer_expired_hander(int signo){
-	PEDEBUG("Inside of Timer handler");
+void timer_expired_handler(int signo){
+	PDEBUG("Inside of Timer handler");
 	syslog(LOG_INFO, "Inside of Timer Handler");
 }
 
@@ -249,7 +249,7 @@ int main(int argc, char *argv[]){
     its.it_value.tv_sec = 0;
     its.it_value.tv_nsec = 100;
     its.it_interval.tv_sec = 0;
-    its.it_internal.tv_nsec = 0;
+    its.it_interval.tv_nsec = 0;
     
     //**********Creating timers and register signals*********
     signal(SIGALRM, timer_expired_handler);
