@@ -38,7 +38,7 @@
 #define CLOCKS_PER_LED 	24
 #define BINARY_NUM		8 //bits per color
 
-#define CLOCKTIME 		10000  //nanoseconds settings for the timer
+#define CLOCKTIME 		100000  //nanoseconds settings for the timer
 //keeping track of how many clocking cycles have happened - 24 per LED
 int clock_count;
 int clock_polarity = 0;
