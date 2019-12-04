@@ -40,6 +40,16 @@
 //keeping track of how many clocking cycles have happened - 24 per LED
 int clock_count;
 int clock_polarity = 0;
+timer_t timerid;
+
+//*****************************************
+//
+//
+//******************************************
+void timer_expired_hander(int signo){
+	PEDEBUG("Inside of Timer handler");
+	syslog(LOG_INFO, "Inside of Timer Handler");
+}
 
 //******************************************
 // Integer to binary
@@ -83,6 +93,7 @@ int main(int argc, char *argv[]){
 	struct timespec itime;
 	struct timespec initTime;
 	struct timespec endTime;
+	struct itimerspec its;
     int *red_binary_num;
     int *green_binary_num;
     int *blue_binary_num;
@@ -224,21 +235,35 @@ int main(int argc, char *argv[]){
   	//set the initial value of the data
     gpio_set_value(LED_DATA,LOW);
     
-    if( nanosleep(&endTime, NULL)<0 ){
-    	PDEBUG("Nanosleep failed on start of clocking");
-    	syslog(LOG_ERR, "Nanosleep Fail on start of clocking - ERRNO = %s", strerror(errno) );
-    }
-
     //setting up nanosleep
-    itime.tv_sec = 0;
-    itime.tv_nsec = 1;
+    itime.tv_sec = 1;
+    itime.tv_nsec = 0;
     //initTime for first bit load
     initTime.tv_sec = 0;
     initTime.tv_nsec = 100;
     //endTime for first bit load
     endTime.tv_sec = 0;
     endTime.tv_nsec = 500000;
+    
+    //itimerspec value setting a timer for 100ns
+    its.it_value.tv_sec = 0;
+    its.it_value.tv_nsec = 100;
+    its.it_interval.tv_sec = 0;
+    its.it_internal.tv_nsec = 0;
+    
+    //**********Creating timers and register signals*********
+    signal(SIGALRM, timer_expired_handler);
+    
+    if( timer_create( CLOCK_REALTIME, NULL, &timerid )<0 ){
+    	PDEBUG("Timer Create Fail");
+    	syslog(LOG_ERR, "Timer Create Fail - ERRNO = %s", strerror(errno) );
+    }
 
+    
+    if( nanosleep(&endTime, NULL)<0 ){
+       	PDEBUG("Nanosleep failed on start of clocking");
+       	syslog(LOG_ERR, "Nanosleep Fail on start of clocking - ERRNO = %s", strerror(errno) );
+    }
     
     int bluep = 7;
     int greenp = 7;
@@ -250,7 +275,10 @@ int main(int argc, char *argv[]){
     for( i=0; i<(clock_count+1); i++ ){
     		PDEBUG("Inside for loop: i=%d\n",i);
     		syslog(LOG_INFO,"inside FOR loop: i=%d",i);
+    		
     		//sleep for up to 10 seconds
+    		timer_settime(timerid, CLOCK_REALTIME, &its, NULL);
+    		
     		if( nanosleep(&itime, NULL)<0 ){
     			PDEBUG("Nanosleep failed on clock low");
     			syslog(LOG_ERR, "Nanosleep Fail on clock low - ERRNO = %s", strerror(errno) );
@@ -271,6 +299,8 @@ int main(int argc, char *argv[]){
     			PDEBUG("Clock is high, going to sleep\n");
     			syslog(LOG_INFO, "Clock was set to HIGH, going to sleep");
     			//spin until interrupt
+    			timer_settime(timerid, CLOCK_REALTIME, &its, NULL);
+    			
     			if( nanosleep(&itime, NULL)<0 ){
     				PDEBUG("Nanosleep failed on clock high");
     				syslog(LOG_ERR, "Nanosleep Fail on clock high - ERRNO = %s", strerror(errno) );
