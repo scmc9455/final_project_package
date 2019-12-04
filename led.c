@@ -224,11 +224,14 @@ int main(int argc, char *argv[]){
   	//set the initial value of the data
     gpio_set_value(LED_DATA,LOW);
     
-    nanosleep(&endTime, NULL);
+    if( nanosleep(&endTime, NULL)<0 ){
+    	PDEBUG("Nanosleep failed on start of clocking");
+    	syslog(LOG_ERROR, "Nanosleep Fail on start of clocking");
+    }
 
     //setting up nanosleep
     itime.tv_sec = 0;
-    itime.tv_nsec = 10;
+    itime.tv_nsec = 10000;
     //initTime for first bit load
     initTime.tv_sec = 0;
     initTime.tv_nsec = 100;
@@ -248,7 +251,10 @@ int main(int argc, char *argv[]){
     		PDEBUG("Inside for loop: i=%d\n",i);
     		syslog(LOG_INFO,"inside FOR loop: i=%d",i);
     		//sleep for up to 10 seconds
-    		nanosleep(&itime, NULL);
+    		if( nanosleep(&itime, NULL)<0 ){
+    			PDEBUG("Nanosleep failed on clock low");
+    			syslog(LOG_ERROR, "Nanosleep Fail on clock low");
+       		}
     		syslog(LOG_INFO, "Coming out of sleep");
     	    //setting the clock value
    	    	if(gpio_set_value(LED_CLOCK, HIGH)){
@@ -265,7 +271,10 @@ int main(int argc, char *argv[]){
     			PDEBUG("Clock is high, going to sleep\n");
     			syslog(LOG_INFO, "Clock was set to HIGH, going to sleep");
     			//spin until interrupt
-    			nanosleep(&itime, NULL);
+    			if( nanosleep(&itime, NULL)<0 ){
+    				PDEBUG("Nanosleep failed on clock high");
+    				syslog(LOG_ERROR, "Nanosleep Fail on clock high");
+    			}
         		syslog(LOG_INFO, "Coming out of sleep");
     		}
 
@@ -309,7 +318,10 @@ int main(int argc, char *argv[]){
 
     				//need to add an initial time interval before clock starts
     				if(i == 0){
-    					nanosleep(&initTime ,NULL);
+    					if( nanosleep(&initTime ,NULL)<0 ){
+    						PDEBUG("Nanosleep failed on clock init");
+    						syslog(LOG_ERROR, "Nanosleep Fail");
+    					}
     				}
     			}//end of blue data load
 
