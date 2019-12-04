@@ -262,6 +262,13 @@ int main(int argc, char *argv[]){
     	syslog(LOG_ERR, "Timer Create Fail - ERRNO = %s", strerror(errno) );
     }
 
+    //*******testing*************
+    while(1){
+    	gpio_set_value(LED_CLOCK, HIGH);
+    	gpio_set_value(LED_CLOCK, LOW);
+    }
+    //**************************
+    
     
     if( nanosleep(&endTime, NULL)<0 ){
        	PDEBUG("Nanosleep failed on start of clocking");
