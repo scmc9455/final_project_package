@@ -22,6 +22,7 @@
 #include <signal.h>
 #include <syslog.h>
 #include <stdbool.h>
+#include <sys/time.h>
 
 //setup a compiler switch statement for turning print statements on or off
 #if DEBUG == 1
@@ -37,6 +38,7 @@
 #define CLOCKS_PER_LED 	24
 #define BINARY_NUM		8 //bits per color
 
+#define CLOCKTIME 		1000  //nanoseconds settings for the timer
 //keeping track of how many clocking cycles have happened - 24 per LED
 int clock_count;
 int clock_polarity = 0;
@@ -49,6 +51,7 @@ timer_t timerid;
 void timer_expired_handler(int signo){
 	PDEBUG("Inside of Timer handler");
 	syslog(LOG_INFO, "Inside of Timer Handler");
+	
 }
 
 //******************************************
@@ -277,7 +280,14 @@ int main(int argc, char *argv[]){
     		syslog(LOG_INFO,"inside FOR loop: i=%d",i);
     		
     		//setting a timer to control clocking
-    		timer_settime(timerid, CLOCK_REALTIME, &its, NULL);
+    	    //itimerspec value setting a timer for 100ns
+    	    its.it_value.tv_sec = 0;
+    	    its.it_value.tv_nsec = CLOCKTIME;
+    	    its.it_interval.tv_sec = 0;
+    	    its.it_interval.tv_nsec = 0;
+    		if( timer_settime(timerid, CLOCK_REALTIME, &its, NULL)<0 ){
+				syslog(LOG_ERR, "Timer_settime fail - %s", strerror(errno) );
+    		}
     		syslog(LOG_INFO, "Timer Set and ready to go to sleep");
     		
     		if( nanosleep(&itime, NULL)<0 ){
@@ -300,7 +310,15 @@ int main(int argc, char *argv[]){
     			PDEBUG("Clock is high, going to sleep\n");
     			syslog(LOG_INFO, "Clock was set to HIGH, going to sleep");
     			//spin until interrupt
-    			timer_settime(timerid, CLOCK_REALTIME, &its, NULL);
+        	    //itimerspec value setting a timer for 100ns
+        	    its.it_value.tv_sec = 0;
+        	    its.it_value.tv_nsec = CLOCKTIME;
+        	    its.it_interval.tv_sec = 0;
+        	    its.it_interval.tv_nsec = 0;
+    			if( timer_settime(timerid, CLOCK_REALTIME, &its, NULL)<0 ){ 
+    				syslog(LOG_ERR, "Timer_settime fail - %s", strerror(errno) );
+    			}
+    			syslog(LOG_INFO, "Timer Set and ready to go to sleep");
     			
     			if( nanosleep(&itime, NULL)<0 ){
     				PDEBUG("Nanosleep failed on clock high");
