@@ -290,6 +290,9 @@ int main(int argc, char *argv[]){
     		}
     		syslog(LOG_INFO, "Timer Set and ready to go to sleep");
     		
+    	    //setting up nanosleep
+    	    itime.tv_sec = 1;
+    	    itime.tv_nsec = 0;
     		if( nanosleep(&itime, NULL)<0 ){
     			PDEBUG("Nanosleep failed on clock low");
     			syslog(LOG_ERR, "Nanosleep Fail on clock low - ERRNO = %s", strerror(errno) );
@@ -320,6 +323,9 @@ int main(int argc, char *argv[]){
     			}
     			syslog(LOG_INFO, "Timer Set and ready to go to sleep");
     			
+    		    //setting up nanosleep
+    		    itime.tv_sec = 1;
+    		    itime.tv_nsec = 0;
     			if( nanosleep(&itime, NULL)<0 ){
     				PDEBUG("Nanosleep failed on clock high");
     				syslog(LOG_ERR, "Nanosleep Fail on clock high - ERRNO = %s", strerror(errno) );
