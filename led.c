@@ -320,7 +320,7 @@ int main(int argc, char *argv[]){
     				if(i == 0){
     					if( nanosleep(&initTime ,NULL)<0 ){
     						PDEBUG("Nanosleep failed on clock init");
-    						syslog(LOG_ERROR, "Nanosleep Fail");
+    						syslog(LOG_ERR, "Nanosleep Fail");
     					}
     				}
     			}//end of blue data load
