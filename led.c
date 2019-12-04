@@ -226,7 +226,7 @@ int main(int argc, char *argv[]){
     
     if( nanosleep(&endTime, NULL)<0 ){
     	PDEBUG("Nanosleep failed on start of clocking");
-    	syslog(LOG_ERROR, "Nanosleep Fail on start of clocking");
+    	syslog(LOG_ERR, "Nanosleep Fail on start of clocking");
     }
 
     //setting up nanosleep
@@ -253,7 +253,7 @@ int main(int argc, char *argv[]){
     		//sleep for up to 10 seconds
     		if( nanosleep(&itime, NULL)<0 ){
     			PDEBUG("Nanosleep failed on clock low");
-    			syslog(LOG_ERROR, "Nanosleep Fail on clock low");
+    			syslog(LOG_ERR, "Nanosleep Fail on clock low");
        		}
     		syslog(LOG_INFO, "Coming out of sleep");
     	    //setting the clock value
@@ -273,7 +273,7 @@ int main(int argc, char *argv[]){
     			//spin until interrupt
     			if( nanosleep(&itime, NULL)<0 ){
     				PDEBUG("Nanosleep failed on clock high");
-    				syslog(LOG_ERROR, "Nanosleep Fail on clock high");
+    				syslog(LOG_ERR, "Nanosleep Fail on clock high");
     			}
         		syslog(LOG_INFO, "Coming out of sleep");
     		}
