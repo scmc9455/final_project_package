@@ -247,7 +247,7 @@ int main(int argc, char *argv[]){
     
     //itimerspec value setting a timer for 100ns
     its.it_value.tv_sec = 0;
-    its.it_value.tv_nsec = 100;
+    its.it_value.tv_nsec = 1000;
     its.it_interval.tv_sec = 0;
     its.it_interval.tv_nsec = 0;
     
@@ -276,8 +276,9 @@ int main(int argc, char *argv[]){
     		PDEBUG("Inside for loop: i=%d\n",i);
     		syslog(LOG_INFO,"inside FOR loop: i=%d",i);
     		
-    		//sleep for up to 10 seconds
+    		//setting a timer to control clocking
     		timer_settime(timerid, CLOCK_REALTIME, &its, NULL);
+    		syslog(LOG_INFO, "Timer Set and ready to go to sleep");
     		
     		if( nanosleep(&itime, NULL)<0 ){
     			PDEBUG("Nanosleep failed on clock low");
