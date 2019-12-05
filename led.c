@@ -241,7 +241,7 @@ int main(int argc, char *argv[]){
     
     //setting up nanosleep
     itime.tv_sec = 0;
-    itime.tv_nsec = 1000;
+    itime.tv_nsec = 10;
     //initTime for first bit load
     initTime.tv_sec = 0;
     initTime.tv_nsec = 100;
@@ -377,12 +377,12 @@ int main(int argc, char *argv[]){
     				}
 
     				//need to add an initial time interval before clock starts
-    				if(i == 0){
-    					if( nanosleep(&initTime ,NULL)<0 ){
-    						PDEBUG("Nanosleep failed on clock init");
-    						syslog(LOG_ERR, "Nanosleep Fail");
-    					}
-    				}
+    				//if(i == 0){
+    				//	if( nanosleep(&initTime ,NULL)<0 ){
+    				//		PDEBUG("Nanosleep failed on clock init");
+    				//		syslog(LOG_ERR, "Nanosleep Fail");
+    				//	}
+    				//}
     			}//end of blue data load
 
 
