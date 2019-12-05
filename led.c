@@ -93,7 +93,7 @@ int main(int argc, char *argv[]){
     //timer_t timer_id;
     //struct itimerspec itime;
 	struct timespec itime;
-	struct timespec initTime;
+	//struct timespec initTime;
 	struct timespec endTime;
 	//struct itimerspec its;
     int *red_binary_num;
@@ -243,8 +243,8 @@ int main(int argc, char *argv[]){
     itime.tv_sec = 0;
     itime.tv_nsec = 10;
     //initTime for first bit load
-    initTime.tv_sec = 0;
-    initTime.tv_nsec = 100;
+    //initTime.tv_sec = 0;
+    //initTime.tv_nsec = 100;
     //endTime for first bit load
     endTime.tv_sec = 0;
     endTime.tv_nsec = 500000;
