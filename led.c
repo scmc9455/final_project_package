@@ -239,6 +239,9 @@ int main(int argc, char *argv[]){
     clock_fd = gpio_set_value_indef(LED_CLOCK,LOW);
   	//set the initial value of the data
     data_fd = gpio_set_value_indef(LED_DATA,LOW);
+    if (data_fd){
+    	syslog(LOG_INFO, "test");
+    }
     
     //setting up nanosleep
     itime.tv_sec = 1;
@@ -589,7 +592,7 @@ int gpio_set_value_indef(uint32_t gpio, PIN_VALUE value){
 	return fd;
 }
 //******************************
-int gpio_set(int fd, PIN_VALUE value){
+void gpio_set(int fd, PIN_VALUE value){
 	
 	if (value==LOW){
 		write(fd, "0", 2);
@@ -598,7 +601,7 @@ int gpio_set(int fd, PIN_VALUE value){
 	}	
 }
 //*****************************
-int gpio_close(int fd){
+void gpio_close(int fd){
 	
 	close(fd);
 }
