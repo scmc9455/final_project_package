@@ -42,17 +42,16 @@
 //keeping track of how many clocking cycles have happened - 24 per LED
 int clock_count;
 int clock_polarity = 0;
-timer_t timerid;
+//timer_t timerid;
 
 //*****************************************
 //
 //
 //******************************************
-void timer_expired_handler(int signo){
-	PDEBUG("Inside of Timer handler");
-	syslog(LOG_INFO, "Inside of Timer Handler");
-	
-}
+//void timer_expired_handler(int signo){
+//	PDEBUG("Inside of Timer handler");
+//	syslog(LOG_INFO, "Inside of Timer Handler");	
+//}
 
 //******************************************
 // Integer to binary
@@ -96,7 +95,7 @@ int main(int argc, char *argv[]){
 	struct timespec itime;
 	struct timespec initTime;
 	struct timespec endTime;
-	struct itimerspec its;
+	//struct itimerspec its;
     int *red_binary_num;
     int *green_binary_num;
     int *blue_binary_num;
@@ -239,9 +238,6 @@ int main(int argc, char *argv[]){
     clock_fd = gpio_set_value_indef(LED_CLOCK,LOW);
   	//set the initial value of the data
     data_fd = gpio_set_value_indef(LED_DATA,LOW);
-    if (data_fd){
-    	syslog(LOG_INFO, "test");
-    }
     
     //setting up nanosleep
     itime.tv_sec = 1;
@@ -254,18 +250,18 @@ int main(int argc, char *argv[]){
     endTime.tv_nsec = 500000;
     
     //itimerspec value setting a timer for 100ns
-    its.it_value.tv_sec = 0;
-    its.it_value.tv_nsec = CLOCKTIME;
-    its.it_interval.tv_sec = 0;
-    its.it_interval.tv_nsec = 0;
+    //its.it_value.tv_sec = 0;
+    //its.it_value.tv_nsec = CLOCKTIME;
+    //its.it_interval.tv_sec = 0;
+    //its.it_interval.tv_nsec = 0;
     
     //**********Creating timers and register signals*********
-    signal(SIGALRM, timer_expired_handler);
+    //signal(SIGALRM, timer_expired_handler);
     
-    if( timer_create( CLOCK_REALTIME, NULL, &timerid )<0 ){
-    	PDEBUG("Timer Create Fail");
-    	syslog(LOG_ERR, "Timer Create Fail - ERRNO = %s", strerror(errno) );
-    }
+    //if( timer_create( CLOCK_REALTIME, NULL, &timerid )<0 ){
+    //	PDEBUG("Timer Create Fail");
+    //	syslog(LOG_ERR, "Timer Create Fail - ERRNO = %s", strerror(errno) );
+    //}
 
     //*******testing*************
     while(1){
@@ -293,25 +289,25 @@ int main(int argc, char *argv[]){
     		
     		//setting a timer to control clocking
     	    //itimerspec value setting a timer for 100ns
-    	    its.it_value.tv_sec = 0;
-    	    its.it_value.tv_nsec = CLOCKTIME;
-    	    its.it_interval.tv_sec = 0;
-    	    its.it_interval.tv_nsec = 0;
-    		if( timer_settime(timerid, CLOCK_REALTIME, &its, NULL)<0 ){
-				syslog(LOG_ERR, "Timer_settime fail - %s", strerror(errno) );
-    		}
-    		syslog(LOG_INFO, "Timer Set and ready to go to sleep");
+    	    //its.it_value.tv_sec = 0;
+    	    //its.it_value.tv_nsec = CLOCKTIME;
+    	    //its.it_interval.tv_sec = 0;
+    	    //its.it_interval.tv_nsec = 0;
+    		//if( timer_settime(timerid, CLOCK_REALTIME, &its, NULL)<0 ){
+			//	syslog(LOG_ERR, "Timer_settime fail - %s", strerror(errno) );
+    		//}
+    		//syslog(LOG_INFO, "Timer Set and ready to go to sleep");
     		
     	    //setting up nanosleep
-    	    itime.tv_sec = 1;
-    	    itime.tv_nsec = 0;
+    	    //itime.tv_sec = 1;
+    	    //itime.tv_nsec = 0;
     		if( nanosleep(&itime, NULL)<0 ){
     			PDEBUG("Nanosleep failed on clock low");
     			syslog(LOG_ERR, "Nanosleep Fail on clock low - ERRNO = %s", strerror(errno) );
        		}
     		syslog(LOG_INFO, "Coming out of sleep");
     	    //setting the clock value
-   	    	if(gpio_set_value(LED_CLOCK, HIGH)){
+   	    	if(gpio_set(clock_fd, HIGH)){
    	    		syslog(LOG_INFO, "gpio_set_value error");
    	    	}
 
@@ -326,18 +322,18 @@ int main(int argc, char *argv[]){
     			syslog(LOG_INFO, "Clock was set to HIGH, going to sleep");
     			//spin until interrupt
         	    //itimerspec value setting a timer for 100ns
-        	    its.it_value.tv_sec = 0;
-        	    its.it_value.tv_nsec = CLOCKTIME;
-        	    its.it_interval.tv_sec = 0;
-        	    its.it_interval.tv_nsec = 0;
-    			if( timer_settime(timerid, CLOCK_REALTIME, &its, NULL)<0 ){ 
-    				syslog(LOG_ERR, "Timer_settime fail - %s", strerror(errno) );
-    			}
-    			syslog(LOG_INFO, "Timer Set and ready to go to sleep");
+        	    //its.it_value.tv_sec = 0;
+        	    //its.it_value.tv_nsec = CLOCKTIME;
+        	    //its.it_interval.tv_sec = 0;
+        	    //its.it_interval.tv_nsec = 0;
+    			//if( timer_settime(timerid, CLOCK_REALTIME, &its, NULL)<0 ){ 
+    			//	syslog(LOG_ERR, "Timer_settime fail - %s", strerror(errno) );
+    			//}
+    			//syslog(LOG_INFO, "Timer Set and ready to go to sleep");
     			
     		    //setting up nanosleep
-    		    itime.tv_sec = 1;
-    		    itime.tv_nsec = 0;
+    		    //itime.tv_sec = 1;
+    		    //itime.tv_nsec = 0;
     			if( nanosleep(&itime, NULL)<0 ){
     				PDEBUG("Nanosleep failed on clock high");
     				syslog(LOG_ERR, "Nanosleep Fail on clock high - ERRNO = %s", strerror(errno) );
@@ -347,7 +343,7 @@ int main(int argc, char *argv[]){
 
     		clock_polarity = 0;
     		//setting the clock value
-    		if(gpio_set_value(LED_CLOCK, LOW)){
+    		if(gpio_set(clock_fd, LOW)){
     			syslog(LOG_INFO, "gpio_set_value error");
     		}
    	    	PDEBUG("LED_CLOCK LOW");
@@ -375,12 +371,12 @@ int main(int argc, char *argv[]){
     				if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
     					syslog(LOG_INFO, "GPIO_DATA Set HIGH");
-    					gpio_set_value(LED_DATA, HIGH);
+    					gpio_set(data_fd, HIGH);
     				}
     				if(binSet == 0){
     					PDEBUG("GPIO Data Set LOW\n");
     					syslog(LOG_INFO, "GPIO_DATA Set LOW");
-    					gpio_set_value(LED_DATA, LOW);
+    					gpio_set(data_fd, LOW);
     				}
 
     				//need to add an initial time interval before clock starts
@@ -407,12 +403,12 @@ int main(int argc, char *argv[]){
     			    if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
     					syslog(LOG_INFO, "GPIO_DATA Set HIGH");
-    			    	gpio_set_value(LED_DATA, HIGH);
+    			    	gpio_set(data_fd, HIGH);
     			    }
     			    if(binSet == 0){
     					PDEBUG("GPIO Data Set LOW\n");
     					syslog(LOG_INFO, "GPIO_DATA Set LOW");
-    			    	gpio_set_value(LED_DATA, LOW);
+    			    	gpio_set(data_fd, LOW);
     			    }
     			}//end of green data load
 
@@ -431,13 +427,13 @@ int main(int argc, char *argv[]){
     			    if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
         				syslog(LOG_INFO, "GPIO Data set to HIGH");
-    			    	gpio_set_value(LED_DATA, HIGH);
+    			    	gpio_set(data_fd, HIGH);
     			    }
     			    if(binSet == 0){
     					PDEBUG("GPIO Data Set LOW\n");
         				syslog(LOG_INFO, "GPIO Data set to LOW");
 
-    					gpio_set_value(LED_DATA, LOW);
+    					gpio_set(data_fd, LOW);
     			    }
     			    
     			}//end of red data load
@@ -453,9 +449,9 @@ int main(int argc, char *argv[]){
     //finally set clock low to latch the data into the intended LED in the strand
 	PDEBUG("GPIO CLOCK Set LOW for latching data\n");
 	syslog(LOG_INFO, "GPIO clock and data set to low");
-    gpio_set_value(LED_CLOCK,LOW);
+    gpio_set(clock_fd,LOW);
     nanosleep(&endTime, NULL);
-	gpio_set_value(LED_DATA, LOW);
+	gpio_set(data_fd, LOW);
 
     //The below needs to be done to make the program reentrant
     //free the pointers
@@ -466,6 +462,9 @@ int main(int argc, char *argv[]){
     //release the GPIO
     gpio_unexport(LED_DATA);
     gpio_unexport(LED_CLOCK);
+    
+    gpio_close(clock_fd);
+    gpio_close(data_fd);
 
     return 0;
 }
