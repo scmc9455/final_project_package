@@ -307,10 +307,8 @@ int main(int argc, char *argv[]){
        		}
     		syslog(LOG_INFO, "Coming out of sleep");
     	    //setting the clock value
-   	    	if(gpio_set(clock_fd, HIGH)){
-   	    		syslog(LOG_INFO, "gpio_set_value error");
-   	    	}
-
+   	    	gpio_set(clock_fd, HIGH);
+   	    	
         	clock_polarity = 1;
    	    	PDEBUG("LED_CLOCK HIGH");
    	    	syslog(LOG_INFO, "Setting LED_CLOCK HIGH");
@@ -343,10 +341,9 @@ int main(int argc, char *argv[]){
 
     		clock_polarity = 0;
     		//setting the clock value
-    		if(gpio_set(clock_fd, LOW)){
-    			syslog(LOG_INFO, "gpio_set_value error");
-    		}
-   	    	PDEBUG("LED_CLOCK LOW");
+    		gpio_set(clock_fd, LOW);
+
+    		PDEBUG("LED_CLOCK LOW");
    	    	syslog(LOG_INFO, "Setting LED_CLOCK LOW");
     		//**************************//
     			//*******IF CLOCK LOW*******//
