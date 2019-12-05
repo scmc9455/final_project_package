@@ -240,8 +240,8 @@ int main(int argc, char *argv[]){
     data_fd = gpio_set_value_indef(LED_DATA,LOW);
     
     //setting up nanosleep
-    itime.tv_sec = 1;
-    itime.tv_nsec = 0;
+    itime.tv_sec = 0;
+    itime.tv_nsec = 1000;
     //initTime for first bit load
     initTime.tv_sec = 0;
     initTime.tv_nsec = 100;
