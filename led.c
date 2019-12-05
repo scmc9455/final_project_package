@@ -100,6 +100,8 @@ int main(int argc, char *argv[]){
     int *red_binary_num;
     int *green_binary_num;
     int *blue_binary_num;
+    int clock_fd, data_fd;
+    
 
 	//open a log file
     openlog(NULL, 0, LOG_USER);
@@ -234,9 +236,9 @@ int main(int argc, char *argv[]){
 
     PDEBUG("Setting up initial pin values\n");
   	//set the initial value of the data
-    gpio_set_value(LED_CLOCK,LOW);
+    clock_fd = gpio_set_value_indef(LED_CLOCK,LOW);
   	//set the initial value of the data
-    gpio_set_value(LED_DATA,LOW);
+    data_fd = gpio_set_value_indef(LED_DATA,LOW);
     
     //setting up nanosleep
     itime.tv_sec = 1;
@@ -264,8 +266,8 @@ int main(int argc, char *argv[]){
 
     //*******testing*************
     while(1){
-    	gpio_set_value(LED_CLOCK, HIGH);
-    	gpio_set_value(LED_CLOCK, LOW);
+    	gpio_set(clock_fd, HIGH);
+    	gpio_set(clock_fd, LOW);
     }
     //**************************
     
@@ -559,6 +561,46 @@ int gpio_set_value(uint32_t gpio, PIN_VALUE value)
 
 	close(fd);
 	return 0;
+}
+
+//**************************************************************
+//  Alternate functions - author Scott McElroy
+//  Functon leaves the file open for gpio
+//  Call this function once! Be sure to close the gpio at the end
+//**************************************************************
+int gpio_set_value_indef(uint32_t gpio, PIN_VALUE value){
+	int fd;
+	char buf[MAX_BUF];
+
+	snprintf(buf, sizeof(buf), SYSFS_GPIO_DIR "/gpio%d/value", gpio);
+
+	fd = open(buf, O_WRONLY);
+	if (fd < 0) {
+		perror("gpio/set-value");
+		return fd;
+	}
+
+	if (value==LOW){
+		write(fd, "0", 2);
+	}else{
+		write(fd, "1", 2);
+	}
+	
+	return fd;
+}
+//******************************
+int gpio_set(int fd, PIN_VALUE value){
+	
+	if (value==LOW){
+		write(fd, "0", 2);
+	}else{
+		write(fd, "1", 2);
+	}	
+}
+//*****************************
+int gpio_close(int fd){
+	
+	close(fd);
 }
 
 /****************************************************************

@@ -46,4 +46,13 @@ int gpio_set_edge(uint32_t gpio, char *edge);
 int gpio_fd_open(uint32_t gpio);
 int gpio_fd_close(uint32_t fd);
 
+//**************************************************************
+//  Alternate function - author Scott McElroy
+//  Functon leaves the file open for gpio
+//  Call this function once! Be sure to close the gpio at the end
+//**************************************************************
+int gpio_set_value_indef(uint32_t gpio, PIN_VALUE value);
+int gpio_set(int fd, PIN_VALUE value);
+int gpio_close(int fd);
+
 #endif /* LED_H_ */
