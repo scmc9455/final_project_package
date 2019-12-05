@@ -264,10 +264,10 @@ int main(int argc, char *argv[]){
     //}
 
     //*******testing*************
-    while(1){
-    	gpio_set(clock_fd, HIGH);
-    	gpio_set(clock_fd, LOW);
-    }
+    //while(1){
+    //	gpio_set(clock_fd, HIGH);
+    //	gpio_set(clock_fd, LOW);
+    //}
     //**************************
     
     
