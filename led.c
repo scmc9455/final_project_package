@@ -48,16 +48,6 @@
 //keeping track of how many clocking cycles have happened - 24 per LED
 int clock_count;
 int clock_polarity = 0;
-//timer_t timerid;
-
-//*****************************************
-//
-//
-//******************************************
-//void timer_expired_handler(int signo){
-//	PDEBUG("Inside of Timer handler");
-//	syslog(LOG_INFO, "Inside of Timer Handler");	
-//}
 
 //******************************************
 // Integer to binary
@@ -96,16 +86,11 @@ int main(int argc, char *argv[]){
 	//variables
     int i;
 	int led_position;
-    //timer_t timer_id;
-    //struct itimerspec itime;
-	struct timespec itime;
-	//struct timespec initTime;
+	//struct timespec itime;
 	struct timespec endTime;
-	//struct itimerspec its;
     int *red_binary_num;
     int *green_binary_num;
     int *blue_binary_num;
-    //int clock_fd, data_fd;
     
     //****Functions from gpio.h****
     //initialize the iolib
@@ -231,19 +216,6 @@ int main(int argc, char *argv[]){
 	//sets the count to be position times clocks per
     clock_count = led_position*CLOCKS_PER_LED;
     PDEBUG("clock_count = %d\n", clock_count);
-    	
-    PDEBUG("Setting up LED_CLOCK low\n");
-	//initialize the gpio clocking for the LED
-    //gpio_export(LED_CLOCK);
-	//set the direction of the pin
-    //gpio_set_dir(LED_CLOCK,OUTPUT_PIN);
-    //initialize the gpio
-
-    PDEBUG("Setting up LED_DATA low\n");
-    //initialize the gpio for data
-    //gpio_export(LED_DATA);
-  	//set the direction of the pin
-    //gpio_set_dir(LED_DATA,OUTPUT_PIN);
 
     PDEBUG("Setting up initial pin values for clock and data\n");
   	//set the initial value of the data
@@ -251,34 +223,14 @@ int main(int argc, char *argv[]){
     pin_low(LED_CLOCK_PORT, LED_CLOCK_PIN);
     pin_low(LED_DATA_PORT, LED_DATA_PIN);
     //****************
-    //clock_fd = gpio_set_value_indef(LED_CLOCK,LOW);
-  	//set the initial value of the data
-    //data_fd = gpio_set_value_indef(LED_DATA,LOW);
     
     //setting up nanosleep
-    itime.tv_sec = 0;
-    itime.tv_nsec = 10;
-    //initTime for first bit load
-    //initTime.tv_sec = 0;
-    //initTime.tv_nsec = 100;
+    //itime.tv_sec = 0;
+    //itime.tv_nsec = 0;
     //endTime for first bit load for 500us
     endTime.tv_sec = 0;
     endTime.tv_nsec = 500000;
     
-    //itimerspec value setting a timer for 100ns
-    //its.it_value.tv_sec = 0;
-    //its.it_value.tv_nsec = CLOCKTIME;
-    //its.it_interval.tv_sec = 0;
-    //its.it_interval.tv_nsec = 0;
-    
-    //**********Creating timers and register signals*********
-    //signal(SIGALRM, timer_expired_handler);
-    
-    //if( timer_create( CLOCK_REALTIME, NULL, &timerid )<0 ){
-    //	PDEBUG("Timer Create Fail");
-    //	syslog(LOG_ERR, "Timer Create Fail - ERRNO = %s", strerror(errno) );
-    //}
-
     //*******testing*************
     //while(1){
     
@@ -305,29 +257,15 @@ int main(int argc, char *argv[]){
     for( i=0; i<(clock_count+1); i++ ){
     		PDEBUG("Inside for loop: i=%d\n",i);
     		syslog(LOG_INFO,"inside FOR loop: i=%d",i);
-    		
-    		//setting a timer to control clocking
-    	    //itimerspec value setting a timer for 100ns
-    	    //its.it_value.tv_sec = 0;
-    	    //its.it_value.tv_nsec = CLOCKTIME;
-    	    //its.it_interval.tv_sec = 0;
-    	    //its.it_interval.tv_nsec = 0;
-    		//if( timer_settime(timerid, CLOCK_REALTIME, &its, NULL)<0 ){
-			//	syslog(LOG_ERR, "Timer_settime fail - %s", strerror(errno) );
-    		//}
-    		//syslog(LOG_INFO, "Timer Set and ready to go to sleep");
-    		
+    		    		
     	    //setting up nanosleep
-    	    //itime.tv_sec = 1;
-    	    //itime.tv_nsec = 0;
-    		if( nanosleep(&itime, NULL)<0 ){
-    			PDEBUG("Nanosleep failed on clock low");
-    			syslog(LOG_ERR, "Nanosleep Fail on clock low - ERRNO = %s", strerror(errno) );
-       		}
-    		syslog(LOG_INFO, "Coming out of sleep");
+    		//if( nanosleep(&itime, NULL)<0 ){
+    		//	PDEBUG("Nanosleep failed on clock low");
+    		//	syslog(LOG_ERR, "Nanosleep Fail on clock low - ERRNO = %s", strerror(errno) );
+       		//}
+    		//syslog(LOG_INFO, "Coming out of sleep");
     	    //setting the clock value
    	    	pin_high(LED_CLOCK_PORT, LED_CLOCK_PIN);
-   	    	//gpio_set(clock_fd, HIGH);
    	    	
         	clock_polarity = 1;
    	    	PDEBUG("LED_CLOCK HIGH");
@@ -335,34 +273,21 @@ int main(int argc, char *argv[]){
     		//***********
 
     		//if clock is high go back to sleep to stop
-    		if(clock_polarity == 1){
-    			PDEBUG("Clock is high, going to sleep\n");
-    			syslog(LOG_INFO, "Clock was set to HIGH, going to sleep");
-    			//spin until interrupt
-        	    //itimerspec value setting a timer for 100ns
-        	    //its.it_value.tv_sec = 0;
-        	    //its.it_value.tv_nsec = CLOCKTIME;
-        	    //its.it_interval.tv_sec = 0;
-        	    //its.it_interval.tv_nsec = 0;
-    			//if( timer_settime(timerid, CLOCK_REALTIME, &its, NULL)<0 ){ 
-    			//	syslog(LOG_ERR, "Timer_settime fail - %s", strerror(errno) );
-    			//}
-    			//syslog(LOG_INFO, "Timer Set and ready to go to sleep");
+    		//if(clock_polarity == 1){
+    			//PDEBUG("Clock is high, going to sleep\n");
+    			//syslog(LOG_INFO, "Clock was set to HIGH, going to sleep");
     			
     		    //setting up nanosleep
-    		    //itime.tv_sec = 1;
-    		    //itime.tv_nsec = 0;
-    			if( nanosleep(&itime, NULL)<0 ){
-    				PDEBUG("Nanosleep failed on clock high");
-    				syslog(LOG_ERR, "Nanosleep Fail on clock high - ERRNO = %s", strerror(errno) );
-    			}
-        		syslog(LOG_INFO, "Coming out of sleep");
-    		}
+    			//if( nanosleep(&itime, NULL)<0 ){
+    			//	PDEBUG("Nanosleep failed on clock high");
+    			//	syslog(LOG_ERR, "Nanosleep Fail on clock high - ERRNO = %s", strerror(errno) );
+    			//}
+        		//syslog(LOG_INFO, "Coming out of sleep");
+    		//}
 
     		clock_polarity = 0;
     		//setting the clock value
    	    	pin_low(LED_CLOCK_PORT, LED_CLOCK_PIN);
-    		//gpio_set(clock_fd, LOW);
 
     		PDEBUG("LED_CLOCK LOW");
    	    	syslog(LOG_INFO, "Setting LED_CLOCK LOW");
@@ -390,22 +315,12 @@ int main(int argc, char *argv[]){
     					PDEBUG("GPIO Data Set HIGH\n");
     					syslog(LOG_INFO, "GPIO_DATA Set HIGH");
     					pin_high(LED_DATA_PORT, LED_DATA_PIN);
-    					//gpio_set(data_fd, HIGH);
     				}
     				if(binSet == 0){
     					PDEBUG("GPIO Data Set LOW\n");
     					syslog(LOG_INFO, "GPIO_DATA Set LOW");
     					pin_low(LED_DATA_PORT, LED_DATA_PIN);
-    					//gpio_set(data_fd, LOW);
     				}
-
-    				//need to add an initial time interval before clock starts
-    				//if(i == 0){
-    				//	if( nanosleep(&initTime ,NULL)<0 ){
-    				//		PDEBUG("Nanosleep failed on clock init");
-    				//		syslog(LOG_ERR, "Nanosleep Fail");
-    				//	}
-    				//}
     			}//end of blue data load
 
 
@@ -460,12 +375,6 @@ int main(int argc, char *argv[]){
     			    }
     			    
     			}//end of red data load
-
-				//need to add an end time interval for latching clock starts
-				//if(i == 25){
-				//	nanosleep(&endTime, NULL);
-				//}
-
     		}//end of returned value check
     }//end of for loop
 
@@ -480,17 +389,12 @@ int main(int argc, char *argv[]){
 
     //The below needs to be done to make the program reentrant
     //free the pointers
-    //timer_delete(timer_id);
     free(red_binary_num);
     free(green_binary_num);
     free(blue_binary_num);
     //release the GPIO
-    //gpio_unexport(LED_DATA);
-    //gpio_unexport(LED_CLOCK);
     
     iolib_free();
-    //gpio_close(clock_fd);
-    //gpio_close(data_fd);
 
     return 0;
 }
