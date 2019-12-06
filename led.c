@@ -232,20 +232,20 @@ int main(int argc, char *argv[]){
     clock_count = led_position*CLOCKS_PER_LED;
     PDEBUG("clock_count = %d\n", clock_count);
     	
-    PDEBUG("Setting up LED_CLOCK\n");
+    PDEBUG("Setting up LED_CLOCK low\n");
 	//initialize the gpio clocking for the LED
     //gpio_export(LED_CLOCK);
 	//set the direction of the pin
     //gpio_set_dir(LED_CLOCK,OUTPUT_PIN);
     //initialize the gpio
 
-    PDEBUG("Setting up LED_DATA\n");
+    PDEBUG("Setting up LED_DATA low\n");
     //initialize the gpio for data
     //gpio_export(LED_DATA);
   	//set the direction of the pin
     //gpio_set_dir(LED_DATA,OUTPUT_PIN);
 
-    PDEBUG("Setting up initial pin values\n");
+    PDEBUG("Setting up initial pin values for clock and data\n");
   	//set the initial value of the data
     //****************
     pin_low(LED_CLOCK_PORT, LED_CLOCK_PIN);
@@ -261,7 +261,7 @@ int main(int argc, char *argv[]){
     //initTime for first bit load
     //initTime.tv_sec = 0;
     //initTime.tv_nsec = 100;
-    //endTime for first bit load
+    //endTime for first bit load for 500us
     endTime.tv_sec = 0;
     endTime.tv_nsec = 500000;
     
@@ -280,13 +280,13 @@ int main(int argc, char *argv[]){
     //}
 
     //*******testing*************
-    while(1){
+    //while(1){
     
-        pin_low(LED_CLOCK_PORT, LED_CLOCK_PIN);
-        pin_high(LED_CLOCK_PORT, LED_CLOCK_PIN);    	
+    //    pin_low(LED_CLOCK_PORT, LED_CLOCK_PIN);
+    //    pin_high(LED_CLOCK_PORT, LED_CLOCK_PIN);    	
     	//	gpio_set(clock_fd, HIGH);
     	//	gpio_set(clock_fd, LOW);
-    }
+    //}
     //**************************
     
     
@@ -326,7 +326,8 @@ int main(int argc, char *argv[]){
        		}
     		syslog(LOG_INFO, "Coming out of sleep");
     	    //setting the clock value
-   	    	gpio_set(clock_fd, HIGH);
+   	    	pin_high(LED_CLOCK_PORT, LED_CLOCK_PIN);
+   	    	//gpio_set(clock_fd, HIGH);
    	    	
         	clock_polarity = 1;
    	    	PDEBUG("LED_CLOCK HIGH");
@@ -360,7 +361,8 @@ int main(int argc, char *argv[]){
 
     		clock_polarity = 0;
     		//setting the clock value
-    		gpio_set(clock_fd, LOW);
+   	    	pin_low(LED_CLOCK_PORT, LED_CLOCK_PIN);
+    		//gpio_set(clock_fd, LOW);
 
     		PDEBUG("LED_CLOCK LOW");
    	    	syslog(LOG_INFO, "Setting LED_CLOCK LOW");
@@ -387,12 +389,14 @@ int main(int argc, char *argv[]){
     				if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
     					syslog(LOG_INFO, "GPIO_DATA Set HIGH");
-    					gpio_set(data_fd, HIGH);
+    					pin_high(LED_DATA_PORT, LED_DATA_PIN);
+    					//gpio_set(data_fd, HIGH);
     				}
     				if(binSet == 0){
     					PDEBUG("GPIO Data Set LOW\n");
     					syslog(LOG_INFO, "GPIO_DATA Set LOW");
-    					gpio_set(data_fd, LOW);
+    					pin_low(LED_DATA_PORT, LED_DATA_PIN);
+    					//gpio_set(data_fd, LOW);
     				}
 
     				//need to add an initial time interval before clock starts
@@ -419,12 +423,14 @@ int main(int argc, char *argv[]){
     			    if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
     					syslog(LOG_INFO, "GPIO_DATA Set HIGH");
-    			    	gpio_set(data_fd, HIGH);
+    			    	pin_high(LED_DATA_PORT, LED_DATA_PIN);
+    			    	//gpio_set(data_fd, HIGH);
     			    }
     			    if(binSet == 0){
     					PDEBUG("GPIO Data Set LOW\n");
     					syslog(LOG_INFO, "GPIO_DATA Set LOW");
-    			    	gpio_set(data_fd, LOW);
+    			    	pin_low(LED_DATA_PORT, LED_DATA_PIN);
+    			    	//gpio_set(data_fd, LOW);
     			    }
     			}//end of green data load
 
@@ -443,13 +449,14 @@ int main(int argc, char *argv[]){
     			    if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
         				syslog(LOG_INFO, "GPIO Data set to HIGH");
-    			    	gpio_set(data_fd, HIGH);
+    			    	pin_high(LED_DATA_PORT, LED_DATA_PIN);
+    			    	//gpio_set(data_fd, HIGH);
     			    }
     			    if(binSet == 0){
     					PDEBUG("GPIO Data Set LOW\n");
         				syslog(LOG_INFO, "GPIO Data set to LOW");
-
-    					gpio_set(data_fd, LOW);
+						pin_low(LED_DATA_PORT, LED_DATA_PIN);
+    					//gpio_set(data_fd, LOW);
     			    }
     			    
     			}//end of red data load
@@ -465,9 +472,11 @@ int main(int argc, char *argv[]){
     //finally set clock low to latch the data into the intended LED in the strand
 	PDEBUG("GPIO CLOCK Set LOW for latching data\n");
 	syslog(LOG_INFO, "GPIO clock and data set to low");
-    gpio_set(clock_fd,LOW);
+	pin_low(LED_CLOCK_PORT, LED_CLOCK_PIN);
+    //gpio_set(clock_fd,LOW);
     nanosleep(&endTime, NULL);
-	gpio_set(data_fd, LOW);
+    pin_low(LED_DATA_PORT, LED_DATA_PIN);
+	//gpio_set(data_fd, LOW);
 
     //The below needs to be done to make the program reentrant
     //free the pointers
@@ -476,11 +485,12 @@ int main(int argc, char *argv[]){
     free(green_binary_num);
     free(blue_binary_num);
     //release the GPIO
-    gpio_unexport(LED_DATA);
-    gpio_unexport(LED_CLOCK);
+    //gpio_unexport(LED_DATA);
+    //gpio_unexport(LED_CLOCK);
     
-    gpio_close(clock_fd);
-    gpio_close(data_fd);
+    iolib_free();
+    //gpio_close(clock_fd);
+    //gpio_close(data_fd);
 
     return 0;
 }
