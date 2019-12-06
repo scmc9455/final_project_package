@@ -36,10 +36,10 @@
 #define LED_CLOCK 		48 //gpio led clock
 #define LED_DATA		60 //gpio led clock data
 //defines for iolib
-#define LED_CLOCK_PORT	1
-#define LED_DATA_PORT	1
-#define LED_CLOCK_PIN	28
-#define LED_DATA_PIN	16
+#define LED_CLOCK_PORT	9
+#define LED_DATA_PORT	9
+#define LED_CLOCK_PIN	12
+#define LED_DATA_PIN	15
 
 #define CLOCKS_PER_LED 	24
 #define BINARY_NUM		8 //bits per color
