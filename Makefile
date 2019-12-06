@@ -10,19 +10,20 @@
 
 CFLAGS = -Wall -Werror
 #all buildable files
-SRC = ./led.c
-OBJS = ./led
+SRC = ./led.c ./gpio.c
+OBJS = $(SRC:.c=.o)
+TARGET:= led
 
 ifeq ($(CC),)
 	CC = $(CROSS_COMPILE)gcc
 endif
 
 ifeq ($(CCFLAGS),)
-	CCFLAGS = -g -Wall -Werror
+	CCFLAGS = -g -Wall #-Werror
 endif
 
 ifeq ($(LDFLAGS),)
-	LDFLAGS = -pthread -lrt
+	LDFLAGS = -lrt -libBBBio
 endif
 
 #============Build executable file========================
@@ -30,12 +31,8 @@ endif
 .PHONY: build
 build: all
 
-.PHONY: all
-all: clean $(OBJS)
-
-
-TARGET:
-	$(CC) $(CCFLAGS) $(INCLUDES) $@.o -o $@ $(LDFLAGS)
+.PHONY: all 
+all: clean gpio.o led
 
 #==========REMOVES executable build and outfiles==========
 #==========Command "make clean"===========================
@@ -44,11 +41,13 @@ clean:
 	rm -f *.o $(OJBS)
 
 
-#===================builds==============================
+gpio.o:gpio.c
+	$(CC) $(CCFLAGS) $(INCLUDES) gpio.c -c -o gpio.o
+
 led:led.c
-	$(CC) $(CCFLAGS) $(INCLUDES) led.c -o led -lrt
+	$(CC) $(CCFLAGS) $(INCLUDES) led.c -c -o led
 
-
+	
 #=====================================================================
 #======================End of File====================================
 #=====================================================================

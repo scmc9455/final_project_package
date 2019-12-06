@@ -23,6 +23,7 @@
 #include <syslog.h>
 #include <stdbool.h>
 #include <sys/time.h>
+#include "gpio.h"
 
 //setup a compiler switch statement for turning print statements on or off
 #if DEBUG == 1
@@ -34,6 +35,11 @@
 //LED GPIO is port x 32 + pin number
 #define LED_CLOCK 		48 //gpio led clock
 #define LED_DATA		60 //gpio led clock data
+//defines for iolib
+#define LED_CLOCK_PORT	1
+#define LED_DATA_PORT	1
+#define LED_CLOCK_PIN	28
+#define LED_DATA_PIN	16
 
 #define CLOCKS_PER_LED 	24
 #define BINARY_NUM		8 //bits per color
@@ -101,6 +107,12 @@ int main(int argc, char *argv[]){
     int *blue_binary_num;
     int clock_fd, data_fd;
     
+    //****Functions from gpio.h****
+    //initialize the iolib
+    iolib_init();
+    iolib_setdir(LED_CLOCK_PORT, LED_CLOCK_PIN, BBBIO_DIR_OUT);
+    iolib_setdir(LED_DATA_PORT, LED_DATA_PIN, BBBIO_DIR_OUT);
+    //***********
 
 	//open a log file
     openlog(NULL, 0, LOG_USER);
@@ -222,22 +234,26 @@ int main(int argc, char *argv[]){
     	
     PDEBUG("Setting up LED_CLOCK\n");
 	//initialize the gpio clocking for the LED
-    gpio_export(LED_CLOCK);
+    //gpio_export(LED_CLOCK);
 	//set the direction of the pin
-    gpio_set_dir(LED_CLOCK,OUTPUT_PIN);
+    //gpio_set_dir(LED_CLOCK,OUTPUT_PIN);
     //initialize the gpio
 
     PDEBUG("Setting up LED_DATA\n");
     //initialize the gpio for data
-    gpio_export(LED_DATA);
+    //gpio_export(LED_DATA);
   	//set the direction of the pin
-    gpio_set_dir(LED_DATA,OUTPUT_PIN);
+    //gpio_set_dir(LED_DATA,OUTPUT_PIN);
 
     PDEBUG("Setting up initial pin values\n");
   	//set the initial value of the data
-    clock_fd = gpio_set_value_indef(LED_CLOCK,LOW);
+    //****************
+    pin_low(LED_CLOCK_PORT, LED_CLOCK_PIN);
+    pin_low(LED_DATA_PORT, LED_DATA_PIN);
+    //****************
+    //clock_fd = gpio_set_value_indef(LED_CLOCK,LOW);
   	//set the initial value of the data
-    data_fd = gpio_set_value_indef(LED_DATA,LOW);
+    //data_fd = gpio_set_value_indef(LED_DATA,LOW);
     
     //setting up nanosleep
     itime.tv_sec = 0;
@@ -264,10 +280,13 @@ int main(int argc, char *argv[]){
     //}
 
     //*******testing*************
-    //while(1){
-    //	gpio_set(clock_fd, HIGH);
-    //	gpio_set(clock_fd, LOW);
-    //}
+    while(1){
+    
+        pin_low(LED_CLOCK_PORT, LED_CLOCK_PIN);
+        pin_high(LED_CLOCK_PORT, LED_CLOCK_PIN);    	
+    	//	gpio_set(clock_fd, HIGH);
+    	//	gpio_set(clock_fd, LOW);
+    }
     //**************************
     
     
