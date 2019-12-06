@@ -46,7 +46,7 @@
 
 #define CLOCKTIME 		100000  //nanoseconds settings for the timer
 //keeping track of how many clocking cycles have happened - 24 per LED
-int clock_count;
+int clock_count, data_position;
 int clock_polarity = 0;
 
 //******************************************
@@ -214,6 +214,10 @@ int main(int argc, char *argv[]){
     //******************************************************
 	//sets the count to be position times clocks per
     clock_count = led_position*CLOCKS_PER_LED;
+    // Data_position will help load the value of the data down the line
+    // if position is 1 data_position is 0
+    // if position is 2 data_position is 24
+    data_position = CLOCKS_PER_LED * (led_position-1);
     PDEBUG("clock_count = %d\n", clock_count);
 
     PDEBUG("Setting up initial pin values for clock and data\n");
@@ -256,7 +260,7 @@ int main(int argc, char *argv[]){
     		PDEBUG("GPIO clock_polarity is 0\n");
     		//syslog(LOG_INFO, "GPIO clock_polartiy is 0");
     		//load the blue data from the blue binary location into the data gpio
-    		if( (i < 8) && (redp >= 0)){
+    		if( ((i<(8+data_position)) && (i>data_position)) && (redp >= 0)){
     			PDEBUG("Inside Red If Statement\n");
     			//syslog(LOG_INFO, "inside Red statement: redp=%d", redp);
     			PDEBUG("redp = %d\n", redp);
@@ -280,7 +284,7 @@ int main(int argc, char *argv[]){
 
 
     		//load the blue data from the blue binary location into the data gpio
-    		if( ((i > 7) && (i < 16)) && (greenp >= 0)){
+    		if( ((i>(7+data_position)) && (i<(16+data_position))) && (greenp >= 0)){
     			PDEBUG("Inside Green If Statement\n");
     			//syslog(LOG_INFO, "inside Green statement: greenp=%d", greenp);
     			PDEBUG("greenp = %d\n", greenp);
@@ -306,7 +310,7 @@ int main(int argc, char *argv[]){
 
 
     		//load the blue data from the blue binary location into the data gpio
-    		if( ((i > 15) && (i < 25)) && (bluep >= 0)){
+    		if( ((i>(15+data_position)) && (i<(25+data_position))) && (bluep >= 0)){
     			PDEBUG("Inside Red If Statement\n");
     			//syslog(LOG_INFO, "inside Blue statement: Redp=%d", bluep);
     			PDEBUG("bluep = %d\n", bluep);
