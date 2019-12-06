@@ -23,7 +23,7 @@ ifeq ($(CCFLAGS),)
 endif
 
 ifeq ($(LDFLAGS),)
-	LDFLAGS = -lrt -libBBBio
+	LDFLAGS = -lrt
 endif
 
 #============Build executable file========================
@@ -32,22 +32,22 @@ endif
 build: all
 
 .PHONY: all 
-all: clean gpio.o led
+all: clean $(TARGET)
+$(TARGET):$(OBJS)
+	$(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) $(OBJS) -o $(TARGET)	
 
 #==========REMOVES executable build and outfiles==========
 #==========Command "make clean"===========================
 .PHONY: clean
 clean:
-	rm -f *.o $(OJBS)
-
+	rm -f *.o $(OJBS) $(TARGET)
 
 gpio.o:gpio.c
 	$(CC) $(CCFLAGS) $(INCLUDES) gpio.c -c -o gpio.o
 
-led:led.c
-	$(CC) $(CCFLAGS) $(INCLUDES) led.c -c -o led
+led.o:led.c
+	$(CC) $(CCFLAGS) $(INCLUDES) led.c -c -o led.o
 
-	
 #=====================================================================
 #======================End of File====================================
 #=====================================================================
