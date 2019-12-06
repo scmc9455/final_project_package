@@ -239,7 +239,7 @@ int main(int argc, char *argv[]){
 
     //this covers the first led load, the clocking needs to be loaded all the way through the strip
     //using the timer this loop counts 24 clocks based on the timing of the timer interval
-    for( i=0; i<(clock_count); i++ ){
+    for( i=0; i<(clock_count+1); i++ ){
     		PDEBUG("Inside for loop: i=%d\n",i);
     		//syslog(LOG_INFO,"inside FOR loop: i=%d",i);
     		    		
@@ -331,21 +331,22 @@ int main(int argc, char *argv[]){
     		}//end of red data load
     		
     		//setting the clock value after the data is loaded
-   	    	pin_high(LED_CLOCK_PORT, LED_CLOCK_PIN);
-   	    	PDEBUG("LED_CLOCK HIGH");
+    		if(i < (clock_count)){
+				pin_high(LED_CLOCK_PORT, LED_CLOCK_PIN);
+				PDEBUG("LED_CLOCK HIGH");
+			}else{
+				pin_low(LED_CLOCK_PORT, LED_CLOCK_PIN);
+			}		
    	    	//syslog(LOG_INFO, "Setting LED_CLOCK HIGH");
     		//***********
     }//end of for loop
 
     //finally set clock low to latch the data into the intended LED in the strand
 	PDEBUG("GPIO CLOCK Set LOW for latching data\n");
-	syslog(LOG_INFO, "GPIO clock and data set to low");
+	//syslog(LOG_INFO, "GPIO clock and data set to low");
 	pin_low(LED_CLOCK_PORT, LED_CLOCK_PIN);
-    //gpio_set(clock_fd,LOW);
-    nanosleep(&endTime, NULL);
     pin_low(LED_DATA_PORT, LED_DATA_PIN);
-	//gpio_set(data_fd, LOW);
-
+	
     //The below needs to be done to make the program reentrant
     //free the pointers
     free(red_binary_num);
