@@ -256,7 +256,7 @@ int main(int argc, char *argv[]){
     //using the timer this loop counts 24 clocks based on the timing of the timer interval
     for( i=0; i<(clock_count+1); i++ ){
     		PDEBUG("Inside for loop: i=%d\n",i);
-    		syslog(LOG_INFO,"inside FOR loop: i=%d",i);
+    		//syslog(LOG_INFO,"inside FOR loop: i=%d",i);
     		    		
     	    //setting up nanosleep
     		//if( nanosleep(&itime, NULL)<0 ){
@@ -267,9 +267,9 @@ int main(int argc, char *argv[]){
     	    //setting the clock value
    	    	pin_high(LED_CLOCK_PORT, LED_CLOCK_PIN);
    	    	
-        	clock_polarity = 1;
+        	//clock_polarity = 1;
    	    	PDEBUG("LED_CLOCK HIGH");
-   	    	syslog(LOG_INFO, "Setting LED_CLOCK HIGH");
+   	    	//syslog(LOG_INFO, "Setting LED_CLOCK HIGH");
     		//***********
 
     		//if clock is high go back to sleep to stop
@@ -285,40 +285,40 @@ int main(int argc, char *argv[]){
         		//syslog(LOG_INFO, "Coming out of sleep");
     		//}
 
-    		clock_polarity = 0;
+    		//clock_polarity = 0;
     		//setting the clock value
    	    	pin_low(LED_CLOCK_PORT, LED_CLOCK_PIN);
 
     		PDEBUG("LED_CLOCK LOW");
-   	    	syslog(LOG_INFO, "Setting LED_CLOCK LOW");
+   	    	//syslog(LOG_INFO, "Setting LED_CLOCK LOW");
     		//**************************//
     			//*******IF CLOCK LOW*******//
     			//ONLY LOAD THE FIRST 24, then this 24 bits moves through the LED strand to the place it need to be//
     			//Blue LSB gets loaded first
     		//if returned value then load a new clock value, the data gets latched by the serial clock on the rising edge
-    		if( clock_polarity == 0 ){
+    		//if( clock_polarity == 0 ){
 
     			PDEBUG("GPIO clock_polarity is 0\n");
-    			syslog(LOG_INFO, "GPIO clock_polartiy is 0");
+    			//syslog(LOG_INFO, "GPIO clock_polartiy is 0");
     			//load the blue data from the blue binary location into the data gpio
     			if( (i < 8) && (redp >= 0)){
     				PDEBUG("Inside Red If Statement\n");
-    				syslog(LOG_INFO, "inside Red statement: redp=%d", redp);
+    				//syslog(LOG_INFO, "inside Red statement: redp=%d", redp);
     				PDEBUG("redp = %d\n", redp);
     				//loads the LSB first up to the MSB
     				int binSet = *(red_binary_num+redp);
     				PDEBUG("binSet = %d\n", binSet);
-    				syslog(LOG_INFO, "binSet = %d\n", binSet);
+    				//syslog(LOG_INFO, "binSet = %d\n", binSet);
     				redp--;
     				//if binValue is a 1 or 0 set function appropriately
     				if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
-    					syslog(LOG_INFO, "GPIO_DATA Set HIGH");
+    					//syslog(LOG_INFO, "GPIO_DATA Set HIGH");
     					pin_high(LED_DATA_PORT, LED_DATA_PIN);
     				}
     				if(binSet == 0){
     					PDEBUG("GPIO Data Set LOW\n");
-    					syslog(LOG_INFO, "GPIO_DATA Set LOW");
+    					//syslog(LOG_INFO, "GPIO_DATA Set LOW");
     					pin_low(LED_DATA_PORT, LED_DATA_PIN);
     				}
     			}//end of blue data load
@@ -327,23 +327,23 @@ int main(int argc, char *argv[]){
     			//load the blue data from the blue binary location into the data gpio
     			if( ((i > 7) && (i < 16)) && (greenp >= 0)){
     				PDEBUG("Inside Green If Statement\n");
-    				syslog(LOG_INFO, "inside Green statement: greenp=%d", greenp);
+    				//syslog(LOG_INFO, "inside Green statement: greenp=%d", greenp);
     				PDEBUG("greenp = %d\n", greenp);
     				//loads the LSB first up to the MSB
     				int binSet = *(green_binary_num+greenp);
     				PDEBUG("binSet = %d\n", binSet);
-    				syslog(LOG_INFO, "binSet = %d\n", binSet);
+    				//syslog(LOG_INFO, "binSet = %d\n", binSet);
     				greenp--;
     			    //if binValue is a 1 or 0 set function appropriately
     			    if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
-    					syslog(LOG_INFO, "GPIO_DATA Set HIGH");
+    					//syslog(LOG_INFO, "GPIO_DATA Set HIGH");
     			    	pin_high(LED_DATA_PORT, LED_DATA_PIN);
     			    	//gpio_set(data_fd, HIGH);
     			    }
     			    if(binSet == 0){
     					PDEBUG("GPIO Data Set LOW\n");
-    					syslog(LOG_INFO, "GPIO_DATA Set LOW");
+    					//syslog(LOG_INFO, "GPIO_DATA Set LOW");
     			    	pin_low(LED_DATA_PORT, LED_DATA_PIN);
     			    	//gpio_set(data_fd, LOW);
     			    }
@@ -353,29 +353,29 @@ int main(int argc, char *argv[]){
     			//load the blue data from the blue binary location into the data gpio
     			if( ((i > 15) && (i < 25)) && (bluep >= 0)){
     				PDEBUG("Inside Red If Statement\n");
-    				syslog(LOG_INFO, "inside Blue statement: Redp=%d", bluep);
+    				//syslog(LOG_INFO, "inside Blue statement: Redp=%d", bluep);
     				PDEBUG("bluep = %d\n", bluep);
     				//loads the LSB first up to the MSB
     				int binSet = *(blue_binary_num+bluep);
     				PDEBUG("binSet = %d\n", binSet);
-    				syslog(LOG_INFO, "binSet = %d\n", binSet);
+    				//syslog(LOG_INFO, "binSet = %d\n", binSet);
     				bluep--;
     			    //if binValue is a 1 or 0 set function appropriately
     			    if(binSet == 1){
     					PDEBUG("GPIO Data Set HIGH\n");
-        				syslog(LOG_INFO, "GPIO Data set to HIGH");
+        				//syslog(LOG_INFO, "GPIO Data set to HIGH");
     			    	pin_high(LED_DATA_PORT, LED_DATA_PIN);
     			    	//gpio_set(data_fd, HIGH);
     			    }
     			    if(binSet == 0){
     					PDEBUG("GPIO Data Set LOW\n");
-        				syslog(LOG_INFO, "GPIO Data set to LOW");
+        				//syslog(LOG_INFO, "GPIO Data set to LOW");
 						pin_low(LED_DATA_PORT, LED_DATA_PIN);
     					//gpio_set(data_fd, LOW);
     			    }
     			    
     			}//end of red data load
-    		}//end of returned value check
+    		//}//end of returned value check
     }//end of for loop
 
     //finally set clock low to latch the data into the intended LED in the strand
