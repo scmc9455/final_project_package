@@ -105,7 +105,7 @@ int main(int argc, char *argv[]){
     int *red_binary_num;
     int *green_binary_num;
     int *blue_binary_num;
-    int clock_fd, data_fd;
+    //int clock_fd, data_fd;
     
     //****Functions from gpio.h****
     //initialize the iolib
