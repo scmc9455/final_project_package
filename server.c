@@ -213,8 +213,9 @@ int main(int argc, char *argv[]){
 		//set up select for socket connection
 		//select waits until a connection is trying to be made
 		int selret = pselect(FD_SETSIZE, &read_socket, NULL, NULL, NULL, &emptyset);
+		FD_ZERO( &read_socket );
 		if( selret < 0){
-			syslog(LOG_ERR,"Pselect error");
+			syslog(LOG_ERR,"Pselect error on connection wait error = %s", strerror(errno) );
 			if(errno == EINTR){
 				INT_EXIT = 0;
 				goto TERMINATE;
@@ -279,7 +280,7 @@ int main(int argc, char *argv[]){
 				FD_SET(socketfd, &read_fd_set);
 				int conret = pselect(FD_SETSIZE, &read_fd_set, NULL, NULL, NULL, &emptyset);	
 				if(conret < 0){
-					syslog(LOG_ERR, "Select Error: %s", strerror(errno));
+					syslog(LOG_ERR, "pSelect Error on trasmit: %s", strerror(errno));
 					if(errno == EINTR){
 						INT_EXIT = 0;
 					}
@@ -296,7 +297,7 @@ int main(int argc, char *argv[]){
 					break;
 				}else  if((readbytes < 0) && (errno != EAGAIN) ){
 					//********handle later*************
-					break;
+					syslog(LOG_INFO, "data received");
 				}else if(readbytes == 0){
 					transmit = false;
 				}else{
@@ -306,7 +307,9 @@ int main(int argc, char *argv[]){
 			}//end of connection_lost while loop
 			
 			//if no more data and connection closed, close socketfd
-			close(socketfd);
+			if(transmit == false){
+				close(socketfd);
+			}
 			
 		}else if((socketfd < 0) && (errno != EAGAIN)){
 			syslog(LOG_ERR, "Accept Connection Error: %s", strerror(errno));
