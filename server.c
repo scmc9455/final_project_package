@@ -294,10 +294,10 @@ int main(int argc, char *argv[]){
 				
 				if(readbytes > 0){
 					//*********handle later*******
-					break;
+					syslog(LOG_INFO, "data received");
 				}else  if((readbytes < 0) && (errno != EAGAIN) ){
 					//********handle later*************
-					syslog(LOG_INFO, "data received");
+					break;
 				}else if(readbytes == 0){
 					transmit = false;
 				}else{
