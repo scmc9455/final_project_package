@@ -295,6 +295,7 @@ int main(int argc, char *argv[]){
 				if(readbytes > 0){
 					//*********handle later*******
 					syslog(LOG_INFO, "data received");
+					send(socketfd, buf, 1, 0);
 				}else  if((readbytes < 0) && (errno != EAGAIN) ){
 					//********handle later*************
 					break;
