@@ -32,7 +32,7 @@ endif
 build: all
 
 .PHONY: all 
-all: clean $(TARGET)
+all: clean server $(TARGET)
 $(TARGET):$(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) $(OBJS) -o $(TARGET)	
 
@@ -40,13 +40,16 @@ $(TARGET):$(OBJS)
 #==========Command "make clean"===========================
 .PHONY: clean
 clean:
-	rm -f *.o $(OJBS) $(TARGET)
+	rm -f *.o $(OJBS) $(TARGET) server
 
 gpio.o:gpio.c
 	$(CC) $(CCFLAGS) $(INCLUDES) gpio.c -c -o gpio.o
 
 led.o:led.c
 	$(CC) $(CCFLAGS) $(INCLUDES) led.c -c -o led.o
+	
+server:server.c
+	$(CC) $(CCFLAGS) -Werror $(INCLUDES) server.c -o server
 
 #=====================================================================
 #======================End of File====================================
