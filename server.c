@@ -339,7 +339,7 @@ int main(int argc, char *argv[]){
 				if(socket_data_count == 18){
 					
 					for(int i=0; i<18; i=i+1){
-						syslog(LOG_INFO, "i=%d *(inputData+i)", i, *(inputData+i) );
+						syslog(LOG_INFO, "i=%d *(inputData+i) = 0x%x", i, *(inputData+i) );
 					}
 					
 					//gathering red data
