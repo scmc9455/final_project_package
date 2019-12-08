@@ -398,7 +398,7 @@ int main(int argc, char *argv[]){
 				}//end of socket data extraction
 				
 				//calling the led driver
-				ledDriver(red, green, blue);
+				ledDriver(pos, red, green, blue);
 				
 				socket_data_count = 0;
 				
