@@ -370,7 +370,6 @@ int main(int argc, char *argv[]){
 						*(blue+2) = *(inputData+16);
 						syslog(LOG_INFO, "blue data = 0x%x 0x%x 0x%x", *blue, *(blue+1), *(blue+2));
 					}
-					
 							
 					free(inputData);
 									
@@ -378,6 +377,8 @@ int main(int argc, char *argv[]){
 				
 				//calling the led driver
 				//ledDriver();
+				
+				socket_data_count = 0;
 				
 				free(red);
 				free(green);
