@@ -392,15 +392,12 @@ int main(int argc, char *argv[]){
 									
 					//calling the led driver
 					syslog(LOG_INFO, "Calling ledDriver");
-					ledDriver(red, green, blue);
+					ledDriver(pos, red, green, blue);
+					socket_data_count = 0;
 
 									
 				}//end of socket data extraction
 				
-				//calling the led driver
-				ledDriver(pos, red, green, blue);
-				
-				socket_data_count = 0;
 				
 				free(red);
 				free(green);
