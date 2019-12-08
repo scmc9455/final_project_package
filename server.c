@@ -301,7 +301,6 @@ int main(int argc, char *argv[]){
 					syslog(LOG_INFO, "data received (socket_data) = 0x%x", socket_data);
 					
 					//add one to the pointer for the buffer
-					socket_data_count = socket_data_count + 1;
 					*(inputData + socket_data_count ) = socket_data; 
 					syslog(LOG_INFO, "*(inputData+socket_data_count) = 0x%x", *(inputData+socket_data_count) );
 					socket_data_count = socket_data_count + 1;
