@@ -297,11 +297,13 @@ int main(int argc, char *argv[]){
 				
 				if(readbytes > 0){
 					//*********handle later*******
-					syslog(LOG_INFO, "data received = %d", *buf);
+					syslog(LOG_INFO, "data received = 0x%x", *buf);
+					syslog(LOG_INFO, "data received (socket_data) = 0x%x", socket_data);
 					
 					//add one to the pointer for the buffer
 					socket_data_count = socket_data_count + 1;
 					*(inputData + socket_data_count ) = socket_data; 
+					syslog(LOG_INFO, "*(inputData+socket_data_count) = 0x%x", *(inputData+socket_data_count) );
 						
 					if(*buf == NEW_LINE_CHAR){
 						syslog(LOG_INFO, "NEW_LINE received - Sending back to caller");
@@ -335,8 +337,9 @@ int main(int argc, char *argv[]){
 				free(inputData);
 				
 				//input data format should be R-### G-### B-###
-				if(socket_data_count > 15){
+				if(socket_data_count == 18){
 					//gathering red data
+					syslog(LOG_INFO, "*inputData = 0x%x", *inputData);
 					if( (*inputData == 'R') ){
 						*red = *(inputData+2);
 						*(red+1) = *(inputData+3);
@@ -344,6 +347,7 @@ int main(int argc, char *argv[]){
 					}
 					syslog(LOG_INFO, "red data = 0x%x 0x%x 0x%x", *red, *(red+1), *(red+2));
 					//gathering green data 
+					syslog(LOG_INFO, "*(inputData+6) = 0x%x", *(inputData+6) );
 					if( (*(inputData+6) == 'G') ){
 						*green = *(inputData+8);
 						*(green+1) = *(inputData+9);
@@ -351,6 +355,7 @@ int main(int argc, char *argv[]){
 					}
 					syslog(LOG_INFO, "green data = 0x%x 0x%x 0x%x", *green, *(green+1), *(green+2));
 					//gathering green data 
+					syslog(LOG_INFO, "*(inputData+12) = 0x%x", *(inputData+12) );
 					if( (*(inputData+12) == 'B') ){
 						*blue = *(inputData+14);
 						*(blue+1) = *(inputData+15);
