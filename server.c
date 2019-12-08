@@ -50,7 +50,7 @@
 #define CONNECTION_NODE NULL
 #define CONNECTION_PORT	"9000" //can also change file to pass in a port value
 #define LISTEN_BACKLOG 	1
-#define INPUT_SIZE		
+#define INPUT_SIZE		17
 
 bool INT_EXIT = true;
 
@@ -241,7 +241,7 @@ int main(int argc, char *argv[]){
 			//varaibles for socket returns and reads 
 			char socket_data = 0;
 			int socket_data_count = 0;
-			char *inputData = malloc( INPUT_SIZE * sizeof(char) );
+			char *inputData = malloc( INPUT_SIZE*sizeof(char) );
 			int readbytes = 0;
 			char *buf = &socket_data;
 			bool transmit = true;
