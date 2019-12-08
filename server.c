@@ -306,8 +306,8 @@ int main(int argc, char *argv[]){
 					if(*buf == NEW_LINE_CHAR){
 						syslog(LOG_INFO, "NEW_LINE received - Sending back to caller");
 						send(socketfd, inputData, socket_data_count, 0);
-					}		
-					//send(socketfd, buf, 1, 0);
+						transmit = false;
+					}
 					
 				}else  if((readbytes < 0) && (errno != EAGAIN) ){
 					//********handle later*************
@@ -324,8 +324,46 @@ int main(int argc, char *argv[]){
 			
 			//if no more data and connection closed, close socketfd
 			if(transmit == false){
+				
+				int *red = malloc(3 * sizeof(char) );
+				int *green = ma
+				int *blue = 0;
+				
 				close(socketfd);
 				free(inputData);
+				
+				//input data format should be R-### G-### B-###
+				if(socket_data_count == 17){
+					//gathering red data
+					if( (*inputData == 'R') ){
+						*red = *(inputData+2);
+						*(red+1) = *(inputData+3);
+						*(red+2) = *(inputData+4);
+					}
+					syslog(LOG_INFO, "red data = 0x%x 0x%x 0x%x", *red, *(red+1), *(red+2));
+					//gathering green data 
+					if( (*(inputData+6) == 'G') ){
+						*green = *(inputData+8);
+						*(green+1) = *(inputData+9);
+						*(green+2) = *(inputData+10);
+					}
+					syslog(LOG_INFO, "green data = 0x%x 0x%x 0x%x", *green, *(green+1), *(green+2));
+					//gathering green data 
+					if( (*(inputData+12) == 'B') ){
+						*blue = *(inputData+14);
+						*(blue+1) = *(inputData+15);
+						*(blue+2) = *(inputData+16);
+					}
+					syslog(LOG_INFO, "blue data = 0x%x 0x%x 0x%x", *blue, *(blue+1), *(blue+2));
+									
+				}//end of socket data extraction
+				
+				//calling the led driver
+				//ledDriver();
+				
+				free(red);
+				free(green);
+				free(blue);
 			}
 			
 		}else if((socketfd < 0) && (errno != EAGAIN)){
