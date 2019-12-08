@@ -52,6 +52,18 @@
 #define LISTEN_BACKLOG 	1
 #define INPUT_SIZE		22
 #define NEW_LINE_CHAR	10
+#define BUF_SIZE		23
+#define ZERO			0x30
+#define ONE				0x31
+#define TWO				0x32
+#define THREE			0x33
+#define FOUR			0x34
+#define FIVE			0x35
+#define SIX				0x36
+#define SEVEN			0x37
+#define EIGHT			0x38
+#define NINE			0x39
+#define SPACE			0x2d
 
 bool INT_EXIT = true;
 
@@ -66,11 +78,242 @@ void interruptHandler(int sig){
 //*************************************************
 //======================ledDriver function Handler==========
 //*************************************************
-void ledDriver(char *pos, char *red, char *green, char *blue){
+int ledDriver(char *pos, char *red, char *green, char *blue){
 	
+	//int ret;
+	int count;
+	char *buf = malloc(BUF_SIZE * sizeof(char) );	
 	
+		
+	syslog(LOG_INFO, "Inside led driver function");	
+	//fd = open('/bin/led', O_WRONLY);
 	
-}	
+	//**************************************************
+	//*******position handling**************************
+	//**************************************************
+	//checking input values to see if value is too large
+	//if the value is greater than 17, than return an error
+	if( *pos > ONE ){
+		if( *(pos+1) > SEVEN){
+			syslog(LOG_ERR, "Position value is too large");
+			return -1;
+		}	
+	}	
+	//**************
+	if(*pos == ONE){
+		syslog(LOG_INFO, "Position value is greater than 10");
+		//if the value is 10 or high load these two values into the buf
+		*buf = *pos;
+		*(buf+1) = *(pos+1);
+		//fill the buff with a space
+		*(buf+2) = (char)SPACE;
+		//increase count to three since three values were loaded into buf
+		count = 3;
+		
+	}else if(*(pos+1) > ZERO){	
+		syslog(LOG_INFO, "Position value is less than 10");
+		if( *pos == ZERO ){
+			//if the first value was zero, than add the second value to the first buf value
+			*buf = *(pos+1);
+			//fill with a space to separate arguments
+			*(buf+1) = (char)SPACE;
+			//increase the count number to 2 since this is how many are stored into the buf
+			count= 2;	
+		}
+			
+	}else{
+		syslog(LOG_ERR, "Position is not greater than 0");
+		return -1;
+	}//position is greater than zero
+		
+	//**************************************************
+	//************end of position handling**************
+	//**************************************************
+	
+	//**************************************************
+	//*******red handling**************************
+	//**************************************************
+	//checking if the value is larger than 255
+	if(*red > TWO){
+		syslog(LOG_ERR, "R value is too large");
+		return -1;
+	}else if(*red == TWO) {
+		if(*(red+1) > FIVE){
+			syslog(LOG_ERR, "R value is too large");
+			return -1;
+		}else if(*(red+1) == FIVE){
+			if(*(red+2) > FIVE){
+				syslog(LOG_ERR, "R value is too large");
+				return -1;
+			}	
+		}	
+	}// end of 255 if statement checking
+
+	//check to see of the number is above zero
+	if(*(red) > ZERO){
+		syslog(LOG_INFO, "Red value is greater than 99");
+		//all three numbers need to bew added
+		*(buf+count) = *red;
+		*(buf+count+1) = *(red+1);
+		*(buf+count+2) = *(red+2);
+		//add space and 4 to count
+		*(buf+count+3) = (char)SPACE;
+		count = count + 4;
+		//output show now be PP_RRR, where P is position and R is number
+	
+	}else if(*(red+1) > ZERO){
+		syslog(LOG_INFO, "Red value is less than 100");
+		//only two numbers need to be added and the first value disregarded
+		*(buf+count) = *(red+1);
+		*(buf+count+1) = *(red+2);
+		//add space and 3 to count
+		*(buf+count+2) = (char)SPACE;
+		count = count + 3;
+		//output show now be PP_RR, where P is position and R is number
+	
+	}else if( *(red+2) > ZERO){
+		syslog(LOG_INFO, "Red value is less than 10");
+		//only one number needs to be added and the first two values disregarded
+		*(buf+count) = *(red+2);
+		//add space and 3 to count
+		*(buf+count+1) = (char)SPACE;
+		count = count + 2;
+    	//output show now be PP_R, where P is position and R is number
+
+	}					
+	
+	//**************************************************
+	//************end of red handling**************
+	//**************************************************
+	
+	//**************************************************
+	//*******green handling**************************
+	//**************************************************
+	//checking if the value is larger than 255
+	if(*green > TWO){
+		syslog(LOG_ERR, "G value is too large");
+		return -1;
+	}else if(*green == TWO) {
+		if(*(green+1) > FIVE){
+			syslog(LOG_ERR, "G value is too large");
+			return -1;
+		}else if(*(green+1) == FIVE){
+			if(*(green+2) > FIVE){
+				syslog(LOG_ERR, "G value is too large");
+				return -1;
+			}	
+		}	
+	}// end of 255 if statement checking	
+
+	//check to see of the number is above zero
+	if(*(green) > ZERO){
+		syslog(LOG_INFO, "Green value is greater than 99");
+		//all three numbers need to bew added
+		*(buf+count) = *green;
+		*(buf+count+1) = *(green+1);
+		*(buf+count+2) = *(green+2);
+		//add space and 4 to count
+		*(buf+count+3) = (char)SPACE;
+		count = count + 4;
+		//output show now be PP_RRR, where P is position and R is number
+	
+	}else if(*(green+1) > ZERO){
+		syslog(LOG_INFO, "Green value is less than 100");
+		//only two numbers need to be added and the first value disregarded
+		*(buf+count) = *(green+1);
+		*(buf+count+1) = *(green+2);
+		//add space and 3 to count
+		*(buf+count+2) = (char)SPACE;
+		count = count + 3;
+		//output show now be PP_RR, where P is position and R is number
+	
+	}else if( *(green+2) > ZERO){
+		syslog(LOG_INFO, "Green value is less than 10");
+		//only one number needs to be added and the first two values disregarded
+		*(buf+count) = *(green+2);
+		//add space and 3 to count
+		*(buf+count+1) = (char)SPACE;
+		count = count + 2;
+    	//output show now be PP_R, where P is position and R is number
+
+	}					
+	
+	//**************************************************
+	//************end of green handling**************
+	//**************************************************
+	
+	//**************************************************
+	//*******blue handling**************************
+	//**************************************************
+	//checking if the value is larger than 255
+	if(*blue > TWO){
+		syslog(LOG_ERR, "B value is too large");
+		return -1;
+	}else if(*blue == TWO) {
+		if(*(blue+1) > FIVE){
+			syslog(LOG_ERR, "B value is too large");
+			return -1;
+		}else if(*(blue+1) == FIVE){
+			if(*(blue+2) > FIVE){
+				syslog(LOG_ERR, "B value is too large");
+				return -1;
+			}	
+		}	
+	}// end of 255 if statement checking	
+	
+	//check to see of the number is above zero
+	if(*(blue) > ZERO){
+		syslog(LOG_INFO, "Blue value is greater than 99");
+		//all three numbers need to bew added
+		*(buf+count) = *blue;
+		*(buf+count+1) = *(blue+1);
+		*(buf+count+2) = *(blue+2);
+		//add space and 4 to count
+		*(buf+count+3) = (char)SPACE;
+		count = count + 4;
+		//output show now be PP_RRR, where P is position and R is number
+	
+	}else if(*(blue+1) > ZERO){
+		syslog(LOG_INFO, "blue value is less than 100");
+		//only two numbers need to be added and the first value disregarded
+		*(buf+count) = *(blue+1);
+		*(buf+count+1) = *(blue+2);
+		//add space and 3 to count
+		*(buf+count+2) = (char)SPACE;
+		count = count + 3;
+		//output show now be PP_RR, where P is position and R is number
+	
+	}else if( *(blue+2) > ZERO){
+		syslog(LOG_INFO, "Blue value is less than 10");
+		//only one number needs to be added and the first two values disregarded
+		*(buf+count) = *(blue+2);
+		//add space and 3 to count
+		*(buf+count+1) = (char)SPACE;
+		count = count + 2;
+    	//output show now be PP_R, where P is position and R is number
+
+	}					
+	
+	//**************************************************
+	//************end of blue handling**************
+	//**************************************************
+
+	syslog(LOG_INFO, "***Outputting Buffer***");
+	for(int i=0; i<count; i=i+1){
+		syslog(LOG_INFO, "buf+%d = 0x%x", i, *(buf+i) );
+	}	
+	
+
+	//function to change buf to string
+	//need to use string = ./led P R G B
+	
+	//ret = system("created string");
+	//syslog(LOG_INFO, "./led call ret = %d", ret);
+	
+	free(buf);
+	
+	return 0;
+}//end of ledDriver function	
 
 //*************************************************
 //====================Main function================
