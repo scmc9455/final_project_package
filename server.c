@@ -305,12 +305,14 @@ int main(int argc, char *argv[]){
 						
 					if(*buf == NEW_LINE_CHAR){
 						syslog(LOG_INFO, "NEW_LINE received - Sending back to caller");
+						syslog(LOG_INFO, "socket_data_count = %d", socket_data_count );
 						send(socketfd, inputData, socket_data_count, 0);
 						transmit = false;
 					}
 					
 				}else  if((readbytes < 0) && (errno != EAGAIN) ){
 					//********handle later*************
+					transmit = false;
 					break;
 				}else if(readbytes == 0){
 					syslog(LOG_INFO, "No data is received");
@@ -333,7 +335,7 @@ int main(int argc, char *argv[]){
 				free(inputData);
 				
 				//input data format should be R-### G-### B-###
-				if(socket_data_count == 17){
+				if(socket_data_count > 15){
 					//gathering red data
 					if( (*inputData == 'R') ){
 						*red = *(inputData+2);
