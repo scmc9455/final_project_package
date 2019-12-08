@@ -336,7 +336,7 @@ int main(int argc, char *argv[]){
 				close(socketfd);
 				
 				//input data format should be R-### G-### B-###
-				if(socket_data_count == 17){
+				if(socket_data_count == 18){
 					
 					for(int i=0; i<17; i=i+1){
 						syslog(LOG_INFO, "i=%d *(inputData+i) = 0x%x", i, *(inputData+i) );
