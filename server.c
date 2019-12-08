@@ -334,7 +334,6 @@ int main(int argc, char *argv[]){
 				int *blue = malloc(3 * sizeof(char) );
 				
 				close(socketfd);
-				free(inputData);
 				
 				//input data format should be R-### G-### B-###
 				if(socket_data_count == 18){
@@ -362,6 +361,8 @@ int main(int argc, char *argv[]){
 						*(blue+2) = *(inputData+16);
 					}
 					syslog(LOG_INFO, "blue data = 0x%x 0x%x 0x%x", *blue, *(blue+1), *(blue+2));
+							
+					free(inputData);
 									
 				}//end of socket data extraction
 				
