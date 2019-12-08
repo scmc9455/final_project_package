@@ -296,7 +296,7 @@ int main(int argc, char *argv[]){
 				
 				if(readbytes > 0){
 					//*********handle later*******
-					syslog(LOG_INFO, "data received = %s", socket_data);
+					syslog(LOG_INFO, "data received = %s", *buf);
 					//add one to the pointer for the buffer
 					socket_data_count = socket_data_count + 1;
 					*(inputData + socket_data_count ) = socket_data; 
@@ -317,6 +317,7 @@ int main(int argc, char *argv[]){
 			//if no more data and connection closed, close socketfd
 			if(transmit == false){
 				close(socketfd);
+				free(inputData);
 			}
 			
 		}else if((socketfd < 0) && (errno != EAGAIN)){
@@ -324,7 +325,6 @@ int main(int argc, char *argv[]){
 			return -1;
 		}
 	
-		free(inputData);
 TERMINATE:
 		if(!INT_EXIT){
 			syslog(LOG_INFO, "INT_EXIT triggered");
