@@ -326,8 +326,8 @@ int main(int argc, char *argv[]){
 			if(transmit == false){
 				
 				int *red = malloc(3 * sizeof(char) );
-				int *green = ma
-				int *blue = 0;
+				int *green = malloc(3 * sizeof(char));
+				int *blue = malloc(3 * sizeof(char) );
 				
 				close(socketfd);
 				free(inputData);
