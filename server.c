@@ -8,7 +8,7 @@
 // Student ID: 105837849
 // Course: ECEN5013-002B
 // Assignment: Final Project
-// INPUT format to server = R-### G-### B-###
+// INPUT format to server = P-## R-### G-### B-###
 //========================================================================
 //========================================================================
 
@@ -50,7 +50,7 @@
 #define CONNECTION_NODE NULL
 #define CONNECTION_PORT	"9000" //can also change file to pass in a port value
 #define LISTEN_BACKLOG 	1
-#define INPUT_SIZE		17
+#define INPUT_SIZE		22
 #define NEW_LINE_CHAR	10
 
 bool INT_EXIT = true;
@@ -61,6 +61,15 @@ bool INT_EXIT = true;
 void interruptHandler(int sig){
 	//set the interrupt exit to trigger a graceful terminate
 	INT_EXIT = false;
+}	
+
+//*************************************************
+//======================ledDriver function Handler==========
+//*************************************************
+void ledDriver(char *pos, char *red, char *green, char *blue){
+	
+	
+	
 }	
 
 //*************************************************
@@ -329,53 +338,67 @@ int main(int argc, char *argv[]){
 			//if no more data and connection closed, close socketfd
 			if(transmit == false){
 				
-				int *red = malloc(3 * sizeof(char) );
-				int *green = malloc(3 * sizeof(char));
-				int *blue = malloc(3 * sizeof(char) );
+				char *pos = malloc(2 * sizeof(char) );
+				char *red = malloc(3 * sizeof(char) );
+				char *green = malloc(3 * sizeof(char));
+				char *blue = malloc(3 * sizeof(char) );
 				
 				close(socketfd);
 				
-				//input data format should be R-### G-### B-###
-				if(socket_data_count == 18){
+				//input data format should be P-## R-### G-### B-###
+				if(socket_data_count == 23){
 					
-					for(int i=0; i<17; i=i+1){
+					for(int i=0; i<22; i=i+1){
 						syslog(LOG_INFO, "i=%d *(inputData+i) = 0x%x", i, *(inputData+i) );
 					}
 					
-					//gathering red data
+					//gathering pos data
 					syslog(LOG_INFO, "*inputData = 0x%x", *inputData);
-					if( (*inputData == 'R') ){
-						*red = *(inputData+2);
-						*(red+1) = *(inputData+3);
-						*(red+2) = *(inputData+4);
+					if( (*inputData == 'P') ){
+						*pos = *(inputData+2);
+						*(pos+1) = *(inputData+3);
+						syslog(LOG_INFO, "position data = 0x%x 0x%x", *pos, *(pos+1) );
+					}
+					
+					//gathering red data
+					syslog(LOG_INFO, "*(inputData+5) = 0x%x", *(inputData+5) );
+					if( (*(inputData+5) == 'R') ){
+						*red = *(inputData+7);
+						*(red+1) = *(inputData+8);
+						*(red+2) = *(inputData+9);
 						syslog(LOG_INFO, "red data = 0x%x 0x%x 0x%x", *red, *(red+1), *(red+2));
 					}
 										
 					//gathering green data 
-					syslog(LOG_INFO, "*(inputData+6) = 0x%x", *(inputData+6) );
-					if( (*(inputData+6) == 'G') ){
-						*green = *(inputData+8);
-						*(green+1) = *(inputData+9);
-						*(green+2) = *(inputData+10);
+					syslog(LOG_INFO, "*(inputData+11) = 0x%x", *(inputData+11) );
+					if( (*(inputData+11) == 'G') ){
+						*green = *(inputData+13);
+						*(green+1) = *(inputData+14);
+						*(green+2) = *(inputData+15);
 						syslog(LOG_INFO, "green data = 0x%x 0x%x 0x%x", *green, *(green+1), *(green+2));
 					}
 					
 					
 					//gathering green data 
-					syslog(LOG_INFO, "*(inputData+12) = 0x%x", *(inputData+12) );
-					if( (*(inputData+12) == 'B') ){
-						*blue = *(inputData+14);
-						*(blue+1) = *(inputData+15);
-						*(blue+2) = *(inputData+16);
+					syslog(LOG_INFO, "*(inputData+17) = 0x%x", *(inputData+17) );
+					if( (*(inputData+17) == 'B') ){
+						*blue = *(inputData+19);
+						*(blue+1) = *(inputData+20);
+						*(blue+2) = *(inputData+21);
 						syslog(LOG_INFO, "blue data = 0x%x 0x%x 0x%x", *blue, *(blue+1), *(blue+2));
 					}
 							
 					free(inputData);
 									
+					//calling the led driver
+					syslog(LOG_INFO, "Calling ledDriver");
+					ledDriver(red, green, blue);
+
+									
 				}//end of socket data extraction
 				
 				//calling the led driver
-				//ledDriver();
+				ledDriver(red, green, blue);
 				
 				socket_data_count = 0;
 				
