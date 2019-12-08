@@ -296,7 +296,7 @@ int main(int argc, char *argv[]){
 				
 				if(readbytes > 0){
 					//*********handle later*******
-					syslog(LOG_INFO, "data received = %s", *buf);
+					syslog(LOG_INFO, "data received = %d", *buf);
 					//add one to the pointer for the buffer
 					socket_data_count = socket_data_count + 1;
 					*(inputData + socket_data_count ) = socket_data; 
