@@ -337,30 +337,39 @@ int main(int argc, char *argv[]){
 				
 				//input data format should be R-### G-### B-###
 				if(socket_data_count == 18){
+					
+					for(int i=0; i<18; i=i+1){
+						syslog(LOG_INFO, "i=%d *(inputData+i)", i, *(inputData+i) );
+					}
+					
 					//gathering red data
 					syslog(LOG_INFO, "*inputData = 0x%x", *inputData);
 					if( (*inputData == 'R') ){
 						*red = *(inputData+2);
 						*(red+1) = *(inputData+3);
 						*(red+2) = *(inputData+4);
+						syslog(LOG_INFO, "red data = 0x%x 0x%x 0x%x", *red, *(red+1), *(red+2));
 					}
-					syslog(LOG_INFO, "red data = 0x%x 0x%x 0x%x", *red, *(red+1), *(red+2));
+										
 					//gathering green data 
 					syslog(LOG_INFO, "*(inputData+6) = 0x%x", *(inputData+6) );
 					if( (*(inputData+6) == 'G') ){
 						*green = *(inputData+8);
 						*(green+1) = *(inputData+9);
 						*(green+2) = *(inputData+10);
+						syslog(LOG_INFO, "green data = 0x%x 0x%x 0x%x", *green, *(green+1), *(green+2));
 					}
-					syslog(LOG_INFO, "green data = 0x%x 0x%x 0x%x", *green, *(green+1), *(green+2));
+					
+					
 					//gathering green data 
 					syslog(LOG_INFO, "*(inputData+12) = 0x%x", *(inputData+12) );
 					if( (*(inputData+12) == 'B') ){
 						*blue = *(inputData+14);
 						*(blue+1) = *(inputData+15);
 						*(blue+2) = *(inputData+16);
+						syslog(LOG_INFO, "blue data = 0x%x 0x%x 0x%x", *blue, *(blue+1), *(blue+2));
 					}
-					syslog(LOG_INFO, "blue data = 0x%x 0x%x 0x%x", *blue, *(blue+1), *(blue+2));
+					
 							
 					free(inputData);
 									
