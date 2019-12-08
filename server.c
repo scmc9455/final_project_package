@@ -299,13 +299,11 @@ int main(int argc, char *argv[]){
 					//*********handle later*******
 					syslog(LOG_INFO, "data received = %d", *buf);
 					
-					if(*buf != NEW_LINE_CHAR){
+					//add one to the pointer for the buffer
+					socket_data_count = socket_data_count + 1;
+					*(inputData + socket_data_count ) = socket_data; 
 						
-						//add one to the pointer for the buffer
-						socket_data_count = socket_data_count + 1;
-						*(inputData + socket_data_count ) = socket_data; 
-						
-					}else if(*buf == NEW_LINE_CHAR){
+					if(*buf == NEW_LINE_CHAR){
 						syslog(LOG_INFO, "NEW_LINE received - Sending back to caller");
 						send(socketfd, inputData, socket_data_count, 0);
 					}		
