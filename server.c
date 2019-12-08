@@ -304,6 +304,7 @@ int main(int argc, char *argv[]){
 					socket_data_count = socket_data_count + 1;
 					*(inputData + socket_data_count ) = socket_data; 
 					syslog(LOG_INFO, "*(inputData+socket_data_count) = 0x%x", *(inputData+socket_data_count) );
+					socket_data_count = socket_data_count + 1;
 						
 					if(*buf == NEW_LINE_CHAR){
 						syslog(LOG_INFO, "NEW_LINE received - Sending back to caller");
@@ -336,9 +337,9 @@ int main(int argc, char *argv[]){
 				close(socketfd);
 				
 				//input data format should be R-### G-### B-###
-				if(socket_data_count == 18){
+				if(socket_data_count == 17){
 					
-					for(int i=0; i<18; i=i+1){
+					for(int i=0; i<17; i=i+1){
 						syslog(LOG_INFO, "i=%d *(inputData+i) = 0x%x", i, *(inputData+i) );
 					}
 					
