@@ -51,6 +51,7 @@
 #define CONNECTION_PORT	"9000" //can also change file to pass in a port value
 #define LISTEN_BACKLOG 	1
 #define INPUT_SIZE		17
+#define NEW_LINE_CHAR	10
 
 bool INT_EXIT = true;
 
@@ -297,16 +298,25 @@ int main(int argc, char *argv[]){
 				if(readbytes > 0){
 					//*********handle later*******
 					syslog(LOG_INFO, "data received = %d", *buf);
-					//add one to the pointer for the buffer
-					socket_data_count = socket_data_count + 1;
-					*(inputData + socket_data_count ) = socket_data; 
+					
+					if(*buf != NEW_LINE_CHAR){
+						
+						//add one to the pointer for the buffer
+						socket_data_count = socket_data_count + 1;
+						*(inputData + socket_data_count ) = socket_data; 
+						
+					}else if(*buf == NEW_LINE_CHAR){
+						syslog(LOG_INFO, "NEW_LINE received - Sending back to caller");
+						send(socketfd, inputData, socket_data_count, 0);
+					}		
 					//send(socketfd, buf, 1, 0);
+					
 				}else  if((readbytes < 0) && (errno != EAGAIN) ){
 					//********handle later*************
 					break;
 				}else if(readbytes == 0){
+					syslog(LOG_INFO, "No data is received");
 					//resend the data back to the server
-					send(socketfd, inputData, socket_data_count, 0);
 					transmit = false;
 				}else{
 					break;		
