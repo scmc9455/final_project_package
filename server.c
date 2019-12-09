@@ -64,6 +64,9 @@
 #define EIGHT			0x38
 #define NINE			0x39
 #define SPACE			0x2d
+#define NULL_TERM		0x0
+#define LED_CALL		"./led "
+#define LED_CALL_COUNT  7
 
 bool INT_EXIT = true;
 
@@ -83,7 +86,6 @@ int ledDriver(char *pos, char *red, char *green, char *blue){
 	//int ret;
 	int count;
 	char *buf = malloc(BUF_SIZE * sizeof(char) );	
-	
 		
 	syslog(LOG_INFO, "Inside led driver function");	
 	//fd = open('/bin/led', O_WRONLY);
@@ -268,9 +270,8 @@ int ledDriver(char *pos, char *red, char *green, char *blue){
 		*(buf+count) = *blue;
 		*(buf+count+1) = *(blue+1);
 		*(buf+count+2) = *(blue+2);
-		//add space and 4 to count
-		*(buf+count+3) = (char)SPACE;
-		count = count + 4;
+		//add 3 to count
+		count = count + 3;
 		//output show now be PP_RRR, where P is position and R is number
 	
 	}else if(*(blue+1) > ZERO){
@@ -278,18 +279,16 @@ int ledDriver(char *pos, char *red, char *green, char *blue){
 		//only two numbers need to be added and the first value disregarded
 		*(buf+count) = *(blue+1);
 		*(buf+count+1) = *(blue+2);
-		//add space and 3 to count
-		*(buf+count+2) = (char)SPACE;
-		count = count + 3;
+		//add 2 to count
+		count = count + 2;
 		//output show now be PP_RR, where P is position and R is number
 	
 	}else if( *(blue+2) > ZERO){
 		syslog(LOG_INFO, "Blue value is less than 10");
 		//only one number needs to be added and the first two values disregarded
 		*(buf+count) = *(blue+2);
-		//add space and 3 to count
-		*(buf+count+1) = (char)SPACE;
-		count = count + 2;
+		//add 1 to count
+		count = count + 1;
     	//output show now be PP_R, where P is position and R is number
 
 	}					
@@ -297,18 +296,27 @@ int ledDriver(char *pos, char *red, char *green, char *blue){
 	//**************************************************
 	//************end of blue handling**************
 	//**************************************************
+	{
+		char printString[LED_CALL_COUNT+BUF_SIZE] = LED_CALL;
 
-	syslog(LOG_INFO, "***Outputting Buffer***");
-	for(int i=0; i<count; i=i+1){
-		syslog(LOG_INFO, "buf+%d = 0x%x", i, *(buf+i) );
-	}	
-	
+		printf("String Output before buf addition = %s", printString);
 
-	//function to change buf to string
-	//need to use string = ./led P R G B
+		syslog(LOG_INFO, "***Outputting Buffer***");
+		for(int i=0; i<count; i=i+1){
+			syslog(LOG_INFO, "buf+%d = 0x%x", i, *(buf+i) );
+			printString[(LED_CALL_COUNT-1) + i] = *(buf+1);
+		}	
 	
-	//ret = system("created string");
-	//syslog(LOG_INFO, "./led call ret = %d", ret);
+		printString[(LED_CALL_COUNT-1) + count] = NULL_TERM;
+	
+		printf("String Output after buffer = %s", printString);
+
+		//function to change buf to string
+		//need to use string = ./led P R G B
+	
+		//ret = system("created string");
+		//syslog(LOG_INFO, "./led call ret = %d", ret);
+	}
 	
 	free(buf);
 	
