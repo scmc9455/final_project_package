@@ -122,7 +122,7 @@ int ledDriver(char *pos, char *red, char *green, char *blue){
 			//increase the count number to 2 since this is how many are stored into the buf
 			count= 2;	
 		}
-			
+	
 	}else{
 		syslog(LOG_ERR, "Position is not greater than 0");
 		return -1;
@@ -177,12 +177,18 @@ int ledDriver(char *pos, char *red, char *green, char *blue){
 		syslog(LOG_INFO, "Red value is less than 10");
 		//only one number needs to be added and the first two values disregarded
 		*(buf+count) = *(red+2);
-		//add space and 3 to count
+		//add space and 2 to count
 		*(buf+count+1) = (char)SPACE;
 		count = count + 2;
     	//output show now be PP_R, where P is position and R is number
 
-	}					
+	}else if( (*(red)==ZERO) && (*(red+1)==ZERO) && (*(red+2)==ZERO) ){
+		//if the number is zero, add a zero to the buffer
+		*(buf+count) = ZERO;
+		//add space and 2 to count
+		*(buf+count+1) = (char)SPACE;
+		count = count + 2;
+	}						
 	
 	//**************************************************
 	//************end of red handling**************
@@ -238,7 +244,13 @@ int ledDriver(char *pos, char *red, char *green, char *blue){
 		count = count + 2;
     	//output show now be PP_R, where P is position and R is number
 
-	}					
+	}else if( (*(green)==ZERO) && (*(green+1)==ZERO) && (*(green+2)==ZERO) ){
+		//if the number is zero, add a zero to the buffer
+		*(buf+count) = ZERO;
+		//add space and 2 to count
+		*(buf+count+1) = (char)SPACE;
+		count = count + 2;
+	}						
 	
 	//**************************************************
 	//************end of green handling**************
@@ -291,7 +303,12 @@ int ledDriver(char *pos, char *red, char *green, char *blue){
 		count = count + 1;
     	//output show now be PP_R, where P is position and R is number
 
-	}					
+	}else if( (*(blue)==ZERO) && (*(blue+1)==ZERO) && (*(blue+2)==ZERO) ){
+		//if the number is zero, add a zero to the buffer
+		*(buf+count) = ZERO;
+		//add space and 1 to count
+		count = count + 1;
+	}						
 	
 	//**************************************************
 	//************end of blue handling**************
