@@ -63,7 +63,7 @@
 #define SEVEN			0x37
 #define EIGHT			0x38
 #define NINE			0x39
-#define SPACE			0x2d
+#define SPACE			0x20
 #define NULL_TERM		0x0
 #define LED_CALL		"./led "
 #define LED_CALL_COUNT  7
