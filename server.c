@@ -83,7 +83,7 @@ void interruptHandler(int sig){
 //*************************************************
 int ledDriver(char *pos, char *red, char *green, char *blue){
 	
-	//int ret;
+	int ret;
 	int count;
 	char *buf = malloc(BUF_SIZE * sizeof(char) );	
 		
