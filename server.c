@@ -314,8 +314,9 @@ int ledDriver(char *pos, char *red, char *green, char *blue){
 		//function to change buf to string
 		//need to use string = ./led P R G B
 	
-		//ret = system("created string");
-		//syslog(LOG_INFO, "./led call ret = %d", ret);
+		syslog(LOG_INFO, "Calling ./led program");
+		ret = system(printString);
+		syslog(LOG_INFO, "./led call ret = %d", ret);
 	}
 	
 	free(buf);
