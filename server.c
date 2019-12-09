@@ -299,17 +299,17 @@ int ledDriver(char *pos, char *red, char *green, char *blue){
 	{
 		char printString[LED_CALL_COUNT+BUF_SIZE] = LED_CALL;
 
-		printf("String Output before buf addition = %s", printString);
+		printf("String Output before buf addition = %s\n", printString);
 
 		syslog(LOG_INFO, "***Outputting Buffer***");
 		for(int i=0; i<count; i=i+1){
 			syslog(LOG_INFO, "buf+%d = 0x%x", i, *(buf+i) );
-			printString[(LED_CALL_COUNT-1) + i] = *(buf+1);
+			printString[(LED_CALL_COUNT-1) + i] = *(buf+i);
 		}	
 	
 		printString[(LED_CALL_COUNT-1) + count] = NULL_TERM;
 	
-		printf("String Output after buffer = %s", printString);
+		printf("String Output after buffer = %s\n", printString);
 
 		//function to change buf to string
 		//need to use string = ./led P R G B
