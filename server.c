@@ -406,8 +406,8 @@ int main(int argc, char *argv[]){
 	//========================================
 	//********running server as daemon********
 	//========================================
-/*	
- * {
+
+	{
 	//creating and killing child and parent processes
 	syslog(LOG_INFO, "Creating server as a daemon");
 	***FORK*****
@@ -425,7 +425,7 @@ int main(int argc, char *argv[]){
 	}
 	
 	//tie daemon to a new session and process group
-	******SETSID******
+	//******SETSID******
 	syslog(LOG_INFO, "setting a new session id");
 	pid_t sid = setsid();
 	if(sid < 0){
@@ -435,7 +435,7 @@ int main(int argc, char *argv[]){
 	}	
 
 	//change the working directory to root
-	*******CHDIR to ROOT********
+	//*******CHDIR to ROOT********
 	syslog(LOG_INFO, "changing the directory to root");
 	int ret = chdir("/");
 	if(ret < 0){
@@ -448,8 +448,8 @@ int main(int argc, char *argv[]){
 	open("/dev/null", O_RDWR);
 	dup(0);
 	dup(0);
-	* }
-*/	
+	}
+
 	//=======================================
 	//******End of deamon creation***********
 	//=======================================
