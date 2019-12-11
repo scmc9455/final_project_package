@@ -65,8 +65,8 @@
 #define NINE			0x39
 #define SPACE			0x20
 #define NULL_TERM		0x0
-#define LED_CALL		"./led "
-#define LED_CALL_COUNT  7
+#define LED_CALL		"./bin/led "
+#define LED_CALL_COUNT  11
 
 bool INT_EXIT = true;
 
