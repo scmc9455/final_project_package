@@ -1,0 +1,32 @@
+#!/bin/sh
+
+#======================================================================
+# Filename: S80ledserver
+# Description: Shellscript file that starts and stops the server daemon
+# Arguments:
+# Author: Scott McElroy
+# Date: December 9, 2019
+# Student ID: 105837849
+# Course: ECEN5013-002B
+# Assignment: Final Project
+#=======================================================================
+#========================================================================
+
+#case statement to run the start-stop-daemon programs
+case "$1" in
+  start)
+    echo "Starting ledserver"
+    #using start-stop-daemon
+    start-stop-daemon -S -n -a --start --startas /bin/server --name server
+    ;;
+  stop)
+    echo "Stopping ledserver"
+    start-stop-daemon -K -n --stop --name  server
+    ;;
+  *)
+    echo "Usage: $0 {start|stop}"
+  exit 1
+esac
+
+exit 0
+
