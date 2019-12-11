@@ -410,12 +410,12 @@ int main(int argc, char *argv[]){
 	{
 	//creating and killing child and parent processes
 	syslog(LOG_INFO, "Creating server as a daemon");
-	***FORK*****
+	//***FORK*****
 	syslog(LOG_INFO, "forking the daemon process");
 	pid_t pid = fork();
 	if(pid < 0){
 		//fork failed to produce a child process
-		syslog(LOG_ERR, "Fork Failed: %s", strerror(errno));
+		syslog(LOG_ERR, "Fork Failed: %s", strerror(errno) );
 		exit(EXIT_FAILURE);
 	}
 	if(pid > 0){
